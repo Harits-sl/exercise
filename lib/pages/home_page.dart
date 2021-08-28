@@ -9,28 +9,30 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 15),
-          child: Column(
-            children: [
-              SizedBox(
-                height: 20,
-              ),
-              Center(
-                child: Text(
-                  'My Courses',
-                  style: titleTextStyle,
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 15),
+            child: Column(
+              children: [
+                SizedBox(
+                  height: 20,
                 ),
-              ),
-              MyCourse(
-                imageUrl: 'assets/course.jpg',
-                title: 'Full-Stack Javascript',
-              ),
-              MyCourse(
-                imageUrl: 'assets/course.jpg',
-                title: 'Full-Stack Web',
-              ),
-            ],
+                Center(
+                  child: Text(
+                    'My Courses',
+                    style: titleTextStyle,
+                  ),
+                ),
+                MyCourse(
+                  imageUrl: 'assets/course.jpg',
+                  title: 'Full-Stack Javascript',
+                ),
+                MyCourse(
+                  imageUrl: 'assets/course.jpg',
+                  title: 'Full-Stack Web',
+                ),
+              ],
+            ),
           ),
         ),
       ),

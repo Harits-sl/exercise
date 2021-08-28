@@ -3,8 +3,8 @@ import 'package:exercise/theme.dart';
 import 'package:flutter/material.dart';
 
 class MyCourse extends StatelessWidget {
-  String imageUrl;
-  String title;
+  final String imageUrl;
+  final String title;
 
   MyCourse({required this.imageUrl, required this.title, Key? key})
       : super(key: key);
