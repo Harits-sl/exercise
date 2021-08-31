@@ -36,8 +36,28 @@ class ListCoursePage extends StatelessWidget {
                 SizedBox(
                   height: 20,
                 ),
-                ListCourse(courseTitle: 'Install tools'),
-                ListCourse(courseTitle: 'Download plugins'),
+                // bagian warming up
+                Text(
+                  'Warming Up',
+                  style: subTitleTextStyle,
+                ),
+                SizedBox(
+                  height: 5,
+                ),
+                ListCourse(courseTitle: 'Slicing templates'),
+                ListCourse(courseTitle: 'Deploy server'),
+                SizedBox(
+                  height: 10,
+                ),
+
+                // bagian project
+                Text(
+                  'Project',
+                  style: subTitleTextStyle,
+                ),
+                SizedBox(
+                  height: 5,
+                ),
                 ListCourse(courseTitle: 'Slicing templates'),
                 ListCourse(courseTitle: 'Deploy server'),
                 ListCourse(courseTitle: 'Penutup'),

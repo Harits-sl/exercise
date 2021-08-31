@@ -10,9 +10,6 @@ class ListCourse extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        SizedBox(
-          height: 10,
-        ),
         InkWell(
           onTap: () {
             Navigator.push(
@@ -33,10 +30,21 @@ class ListCourse extends StatelessWidget {
               horizontal: 8,
               vertical: 10,
             ),
-            child: Text(
-              courseTitle,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  courseTitle,
+                ),
+                Icon(
+                  Icons.play_arrow,
+                ),
+              ],
             ),
           ),
+        ),
+        SizedBox(
+          height: 10,
         ),
       ],
     );

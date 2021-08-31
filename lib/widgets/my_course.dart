@@ -1,13 +1,12 @@
+import 'package:exercise/models/course.dart';
 import 'package:exercise/pages/list_course_page.dart';
 import 'package:exercise/theme.dart';
 import 'package:flutter/material.dart';
 
 class MyCourse extends StatelessWidget {
-  final String imageUrl;
-  final String title;
+  final Course? course;
 
-  MyCourse({required this.imageUrl, required this.title, Key? key})
-      : super(key: key);
+  MyCourse({this.course, Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -23,18 +22,18 @@ class MyCourse extends StatelessWidget {
               context,
               MaterialPageRoute(
                 builder: (context) => ListCoursePage(
-                  title: title,
+                  title: course!.namaKelas!,
                   totalVideo: '12,590',
                 ),
               ),
             );
           },
-          child: Image.asset(
-            imageUrl,
+          child: Image.network(
+            'https://bwasandbox.com/${course!.thumbnailKelas!}',
           ),
         ),
         Text(
-          title,
+          course!.namaKelas ?? 'kosong',
           style: subTitleTextStyle,
         ),
       ],
