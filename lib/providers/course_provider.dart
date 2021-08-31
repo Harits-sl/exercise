@@ -5,10 +5,10 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 
 class CourseProvider extends ChangeNotifier {
-  final String baseUrl = '';
+  final String baseUrl = 'https://bwasandbox.com';
 
-  Future getAllCourseStarter() async {
-    String url = '';
+  Future getAllCourseStarter(int i, int j) async {
+    String url = '$baseUrl/api/course-starter';
 
     var apiResult = await http.get(Uri.parse(url));
 
@@ -17,6 +17,26 @@ class CourseProvider extends ChangeNotifier {
 
       List<Course> listCourses =
           data.map((item) => Course.fromJsonAllCourseStarter(item)).toList();
+
+      // mengubah list kelas
+      print('i = $i, j = $j');
+      List someListCourses = listCourses.sublist(i, j);
+
+      return someListCourses;
+    }
+  }
+
+  Future getDetailCourseStarter(String id) async {
+    String url = '$baseUrl/api/course-starter/$id';
+
+    var apiResult = await http.get(Uri.parse(url));
+
+    if (apiResult.statusCode == 200) {
+      var data = jsonDecode(apiResult.body);
+      print(data);
+
+      Course listCourses = Course.fromJsonDetailCourseStarter(data);
+      print('ini listcourse $listCourses');
 
       return listCourses;
     }

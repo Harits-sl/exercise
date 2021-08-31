@@ -1,9 +1,14 @@
 class Course {
-  final int? id;
-  final String? thumbnailKelas;
-  final String? namaKelas;
+  final int id;
+  final String thumbnailKelas;
+  final String namaKelas;
+  final List bagian;
 
-  Course({this.id, this.thumbnailKelas, this.namaKelas});
+  Course(
+      {required this.id,
+      required this.thumbnailKelas,
+      required this.namaKelas,
+      required this.bagian});
 
   factory Course.fromJsonAllCourseStarter(Map<String, dynamic> json) {
     return Course(
@@ -11,6 +16,16 @@ class Course {
       thumbnailKelas: json['thumbnail_kelas'] ??
           '/storage/assets/thumbnails/kelas_webflow_dasar_thumb.png',
       namaKelas: json['nama_kelas'] ?? '',
+      bagian: [],
+    );
+  }
+
+  factory Course.fromJsonDetailCourseStarter(Map<String, dynamic> json) {
+    return Course(
+      id: json['id'],
+      namaKelas: json['nama_kelas'] ?? '',
+      bagian: json['bagian'],
+      thumbnailKelas: '',
     );
   }
 }

@@ -4,9 +4,9 @@ import 'package:exercise/theme.dart';
 import 'package:flutter/material.dart';
 
 class MyCourse extends StatelessWidget {
-  final Course? course;
+  final Course course;
 
-  MyCourse({this.course, Key? key}) : super(key: key);
+  MyCourse({required this.course, Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -22,18 +22,19 @@ class MyCourse extends StatelessWidget {
               context,
               MaterialPageRoute(
                 builder: (context) => ListCoursePage(
-                  title: course!.namaKelas!,
+                  id: course.id,
+                  title: course.namaKelas,
                   totalVideo: '12,590',
                 ),
               ),
             );
           },
           child: Image.network(
-            'https://bwasandbox.com/${course!.thumbnailKelas!}',
+            'https://bwasandbox.com/${course.thumbnailKelas}',
           ),
         ),
         Text(
-          course!.namaKelas ?? 'kosong',
+          course.namaKelas,
           style: subTitleTextStyle,
         ),
       ],

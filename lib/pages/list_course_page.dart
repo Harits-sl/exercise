@@ -1,16 +1,26 @@
+import 'package:exercise/providers/course_provider.dart';
 import 'package:exercise/theme.dart';
+import 'package:exercise/widgets/card_list_course.dart';
 import 'package:exercise/widgets/list_course.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class ListCoursePage extends StatelessWidget {
+  final int id;
   final String title;
   final String totalVideo;
 
-  ListCoursePage({required this.title, required this.totalVideo, Key? key})
+  ListCoursePage(
+      {required this.title,
+      required this.id,
+      required this.totalVideo,
+      Key? key})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    var courseProvider = Provider.of<CourseProvider>(context);
+
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
@@ -37,30 +47,24 @@ class ListCoursePage extends StatelessWidget {
                   height: 20,
                 ),
                 // bagian warming up
-                Text(
-                  'Warming Up',
-                  style: subTitleTextStyle,
+                FutureBuilder(
+                  future: courseProvider.getDetailCourseStarter(id.toString()),
+                  builder:
+                      (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+                    if (snapshot.hasData) {
+                      var data = snapshot.data;
+                      return ListView.builder(
+                        itemCount: data.bagian.length,
+                        itemBuilder: (context, position) {
+                          return CardListCourse(bagian: data.bagian);
+                        },
+                      );
+                    }
+                    return Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  },
                 ),
-                SizedBox(
-                  height: 5,
-                ),
-                ListCourse(courseTitle: 'Slicing templates'),
-                ListCourse(courseTitle: 'Deploy server'),
-                SizedBox(
-                  height: 10,
-                ),
-
-                // bagian project
-                Text(
-                  'Project',
-                  style: subTitleTextStyle,
-                ),
-                SizedBox(
-                  height: 5,
-                ),
-                ListCourse(courseTitle: 'Slicing templates'),
-                ListCourse(courseTitle: 'Deploy server'),
-                ListCourse(courseTitle: 'Penutup'),
               ],
             ),
           ),
