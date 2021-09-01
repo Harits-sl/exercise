@@ -12,12 +12,12 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  int i = 0;
+  int j = 3;
+
   @override
   Widget build(BuildContext context) {
     var courseProvider = Provider.of<CourseProvider>(context);
-
-    int i = 0;
-    int j = 3;
 
     var _getData = courseProvider.getAllCourseStarter(i, j);
 
@@ -45,8 +45,6 @@ class _HomePageState extends State<HomePage> {
                       var data = snapshot.data;
                       return Column(
                         children: data.map<Widget>((item) {
-                          print(item.id);
-
                           return MyCourse(
                             course: item,
                           );
@@ -62,8 +60,14 @@ class _HomePageState extends State<HomePage> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    GestureDetector(
-                      onTap: () {},
+                    InkWell(
+                      onTap: () {
+                        setState(() {
+                          i -= 3;
+                          j -= 3;
+                          _getData = courseProvider.getAllCourseStarter(i, j);
+                        });
+                      },
                       child: Container(
                         color: Colors.blue,
                         child: Icon(
@@ -73,7 +77,7 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ),
                     ),
-                    GestureDetector(
+                    InkWell(
                       onTap: () {
                         setState(() {
                           i += 3;

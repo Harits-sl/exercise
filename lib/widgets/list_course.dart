@@ -3,8 +3,19 @@ import 'package:flutter/material.dart';
 
 class ListCourse extends StatelessWidget {
   final String courseTitle;
+  final int id;
+  // final String videoId;
+  // final String nextVideoId;
+  // final String nextCourseTitle;
 
-  const ListCourse({required this.courseTitle, Key? key}) : super(key: key);
+  const ListCourse(
+      {required this.courseTitle,
+      required this.id,
+      // required this.videoId,
+      // required this.nextVideoId,
+      // required this.nextCourseTitle,
+      Key? key})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +27,11 @@ class ListCourse extends StatelessWidget {
               context,
               MaterialPageRoute(
                 builder: (context) => VideoCoursePage(
-                  courseTitle: courseTitle,
+                  // videoId: videoId,
+                  // courseTitle: courseTitle,
+                  // nextVideoId: nextVideoId,
+                  // nextCourseTitle: nextCourseTitle,
+                  id: id,
                 ),
               ),
             );

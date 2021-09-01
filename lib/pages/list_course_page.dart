@@ -1,7 +1,6 @@
 import 'package:exercise/providers/course_provider.dart';
 import 'package:exercise/theme.dart';
 import 'package:exercise/widgets/card_list_course.dart';
-import 'package:exercise/widgets/list_course.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -24,48 +23,64 @@ class ListCoursePage extends StatelessWidget {
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
+          physics: ScrollPhysics(),
           child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 15),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(
-                  height: 20,
-                ),
-                Center(
-                  child: Column(
+            padding: EdgeInsets.symmetric(horizontal: 15, vertical: 20),
+            child: FutureBuilder(
+              future: courseProvider.getDetailCourseStarter(id.toString()),
+              builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+                if (snapshot.hasData) {
+                  var data = snapshot.data;
+
+                  int totalVideo = 0;
+
+                  void _addAndPrint(int number) {
+                    totalVideo += number;
+                  }
+
+                  var a = data.bagian
+                      .map((item) => item)
+                      .map((item) => _addAndPrint(item['materi_kelas'].length));
+                  print(a);
+
+                  return Column(
                     children: [
-                      Text(title, style: titleTextStyle),
-                      SizedBox(
-                        height: 3,
+                      Center(
+                        child: Column(
+                          children: [
+                            Text(
+                              data.namaKelas,
+                              style: titleTextStyle,
+                              textAlign: TextAlign.center,
+                            ),
+                            SizedBox(
+                              height: 3,
+                            ),
+                            Text(
+                              '$totalVideo Video',
+                              style: titleTextStyle,
+                            ),
+                            SizedBox(
+                              height: 10,
+                            ),
+                          ],
+                        ),
                       ),
-                      Text('$totalVideo Video', style: titleTextStyle),
-                    ],
-                  ),
-                ),
-                SizedBox(
-                  height: 20,
-                ),
-                // bagian warming up
-                FutureBuilder(
-                  future: courseProvider.getDetailCourseStarter(id.toString()),
-                  builder:
-                      (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-                    if (snapshot.hasData) {
-                      var data = snapshot.data;
-                      return ListView.builder(
+                      ListView.builder(
                         itemCount: data.bagian.length,
-                        itemBuilder: (context, position) {
-                          return CardListCourse(bagian: data.bagian);
+                        shrinkWrap: true,
+                        physics: NeverScrollableScrollPhysics(),
+                        itemBuilder: (context, index) {
+                          return CardListCourse(bagian: data.bagian[index]);
                         },
-                      );
-                    }
-                    return Center(
-                      child: CircularProgressIndicator(),
-                    );
-                  },
-                ),
-              ],
+                      ),
+                    ],
+                  );
+                }
+                return Center(
+                  child: CircularProgressIndicator(),
+                );
+              },
             ),
           ),
         ),

@@ -16,10 +16,9 @@ class CourseProvider extends ChangeNotifier {
       List data = jsonDecode(apiResult.body);
 
       List<Course> listCourses =
-          data.map((item) => Course.fromJsonAllCourseStarter(item)).toList();
+          data.map((item) => Course.fromJson(item)).toList();
 
       // mengubah list kelas
-      print('i = $i, j = $j');
       List someListCourses = listCourses.sublist(i, j);
 
       return someListCourses;
@@ -33,12 +32,22 @@ class CourseProvider extends ChangeNotifier {
 
     if (apiResult.statusCode == 200) {
       var data = jsonDecode(apiResult.body);
-      print(data);
-
-      Course listCourses = Course.fromJsonDetailCourseStarter(data);
-      print('ini listcourse $listCourses');
+      Course listCourses = Course.fromJson(data);
 
       return listCourses;
+    }
+  }
+
+  Future getVideoCourseStarter(String id) async {
+    String url = '$baseUrl/api/course-starter/materi/$id';
+
+    var apiResult = await http.get(Uri.parse(url));
+
+    if (apiResult.statusCode == 200) {
+      var data = jsonDecode(apiResult.body);
+      Course course = Course.fromJson(data);
+
+      return course;
     }
   }
 }

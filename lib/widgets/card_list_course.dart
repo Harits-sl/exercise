@@ -1,4 +1,4 @@
-import 'package:exercise/models/course.dart';
+import 'package:exercise/theme.dart';
 import 'package:exercise/widgets/list_course.dart';
 import 'package:flutter/material.dart';
 
@@ -9,15 +9,30 @@ class CardListCourse extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Column(
-        children: [
-          Text(bagian['nama_bagian']),
-          ListCourse(
-              courseTitle: bagian['nama_bagian']['materi_kelas'][0]
-                  ['nama_materi']),
-        ],
-      ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          bagian['nama_bagian'],
+          style: subTitleTextStyle,
+        ),
+        SizedBox(height: 5),
+        ListView.builder(
+          itemCount: bagian['materi_kelas'].length,
+          shrinkWrap: true,
+          physics: NeverScrollableScrollPhysics(),
+          itemBuilder: (context, index) {
+            return ListCourse(
+              id: bagian['materi_kelas'][index]['id'],
+              courseTitle: bagian['materi_kelas'][index]['nama_materi'],
+              // videoId: bagian['materi_kelas'][index]['video_materi'],
+              // nextCourseTitle: bagian['materi_kelas'][index + 1]['nama_materi'],
+              // nextVideoId: bagian['materi_kelas'][index + 1]['video_materi'],
+            );
+          },
+        ),
+        SizedBox(height: 10),
+      ],
     );
   }
 }
