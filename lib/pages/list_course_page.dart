@@ -43,6 +43,8 @@ class ListCoursePage extends StatelessWidget {
                       .map((item) => _addAndPrint(item['materi_kelas'].length));
                   print(a);
 
+                  int lastIndex = data.bagian.length - 1;
+                  print(data.bagian[lastIndex]);
                   return Column(
                     children: [
                       Center(

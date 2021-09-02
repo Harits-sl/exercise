@@ -1,7 +1,4 @@
-import 'dart:async';
-
 import 'package:exercise/providers/course_provider.dart';
-import 'package:exercise/theme.dart';
 import 'package:exercise/widgets/video_course.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
@@ -66,12 +63,14 @@ class _VideoCoursePageState extends State<VideoCoursePage> {
                   //     );
                   //   },
                   // );
+                  String videoId = data.videoMateri;
                   YoutubePlayerController _controller = YoutubePlayerController(
-                    initialVideoId: data.videoMateri,
+                    initialVideoId: videoId,
                   );
                   return Column(
                     children: [
                       VideoCourse(
+                        videoId: videoId,
                         controller: _controller,
                         namaMateri: data.namaMateri,
                       ),
@@ -84,7 +83,6 @@ class _VideoCoursePageState extends State<VideoCoursePage> {
                             setState(() {
                               idNow += 1;
                             });
-                            _controller.load(data.videoMateri);
                           },
                           child: Padding(
                             padding: const EdgeInsets.symmetric(
