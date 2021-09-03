@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 class ListCourse extends StatelessWidget {
   final String courseTitle;
   final int id;
+  final int lastCourseId;
   // final String videoId;
   // final String nextVideoId;
   // final String nextCourseTitle;
@@ -11,6 +12,7 @@ class ListCourse extends StatelessWidget {
   const ListCourse(
       {required this.courseTitle,
       required this.id,
+      required this.lastCourseId,
       // required this.videoId,
       // required this.nextVideoId,
       // required this.nextCourseTitle,
@@ -32,6 +34,7 @@ class ListCourse extends StatelessWidget {
                   // nextVideoId: nextVideoId,
                   // nextCourseTitle: nextCourseTitle,
                   id: id,
+                  lastCourseId: lastCourseId,
                 ),
               ),
             );

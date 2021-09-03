@@ -62,14 +62,16 @@ class _HomePageState extends State<HomePage> {
                   children: [
                     InkWell(
                       onTap: () {
-                        setState(() {
-                          i -= 3;
-                          j -= 3;
-                          _getData = courseProvider.getAllCourseStarter(i, j);
-                        });
+                        if (i != 0 && j != 3) {
+                          setState(() {
+                            i -= 3;
+                            j -= 3;
+                            _getData = courseProvider.getAllCourseStarter(i, j);
+                          });
+                        }
                       },
                       child: Container(
-                        color: Colors.blue,
+                        color: i != 0 ? Colors.blue : Colors.white,
                         child: Icon(
                           Icons.arrow_left,
                           size: 30,

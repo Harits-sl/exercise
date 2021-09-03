@@ -1,3 +1,4 @@
+import 'package:exercise/pages/finish_course_page.dart';
 import 'package:exercise/providers/course_provider.dart';
 import 'package:exercise/widgets/video_course.dart';
 import 'package:provider/provider.dart';
@@ -6,8 +7,11 @@ import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 class VideoCoursePage extends StatefulWidget {
   final int id;
+  final int lastCourseId;
 
-  const VideoCoursePage({required this.id, Key? key}) : super(key: key);
+  const VideoCoursePage(
+      {required this.id, required this.lastCourseId, Key? key})
+      : super(key: key);
 
   @override
   _VideoCoursePageState createState() => _VideoCoursePageState(id);
@@ -15,6 +19,7 @@ class VideoCoursePage extends StatefulWidget {
 
 class _VideoCoursePageState extends State<VideoCoursePage> {
   int idNow;
+  String buttonTitle = 'Next Video';
 
   _VideoCoursePageState(this.idNow);
 
@@ -37,32 +42,6 @@ class _VideoCoursePageState extends State<VideoCoursePage> {
                 if (snapshot.hasData) {
                   var data = snapshot.data;
 
-                  // return YoutubePlayerBuilder(
-                  //   player: YoutubePlayer(
-                  //     controller: _controller,
-                  //   ),
-                  //   builder: (context, player) {
-                  //     return Padding(
-                  //       padding: const EdgeInsets.symmetric(horizontal: 15),
-                  //       child: Column(
-                  //         crossAxisAlignment: CrossAxisAlignment.start,
-                  //         children: [
-                  //           SizedBox(
-                  //             height: 20,
-                  //           ),
-                  //           player,
-                  //           SizedBox(
-                  //             height: 12,
-                  //           ),
-                  //           Text(
-                  //             data.namaMateri,
-                  //             style: subTitleTextStyle,
-                  //           ),
-                  //         ],
-                  //       ),
-                  //     );
-                  //   },
-                  // );
                   String videoId = data.videoMateri;
                   YoutubePlayerController _controller = YoutubePlayerController(
                     initialVideoId: videoId,
@@ -80,8 +59,19 @@ class _VideoCoursePageState extends State<VideoCoursePage> {
                       Center(
                         child: ElevatedButton(
                           onPressed: () {
+                            if (idNow == widget.lastCourseId) {
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => FinishCoursePage(),
+                                ),
+                              );
+                            }
                             setState(() {
                               idNow += 1;
+                              if (idNow == widget.lastCourseId) {
+                                buttonTitle = 'Finish Course';
+                              }
                             });
                           },
                           child: Padding(
@@ -89,7 +79,11 @@ class _VideoCoursePageState extends State<VideoCoursePage> {
                               horizontal: 35,
                               vertical: 8,
                             ),
-                            child: Text('Next Video'),
+                            child: Text(
+                              widget.id == widget.lastCourseId
+                                  ? 'Finish Course'
+                                  : buttonTitle,
+                            ),
                           ),
                         ),
                       ),

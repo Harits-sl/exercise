@@ -33,18 +33,29 @@ class ListCoursePage extends StatelessWidget {
                   var data = snapshot.data;
 
                   int totalVideo = 0;
+                  int lastCourseId = 0;
 
-                  void _addAndPrint(int number) {
+                  void _totalVideo(int number) {
                     totalVideo += number;
+                  }
+
+                  void _last(int number) {
+                    lastCourseId = number;
                   }
 
                   var a = data.bagian
                       .map((item) => item)
-                      .map((item) => _addAndPrint(item['materi_kelas'].length));
+                      .map((item) => _totalVideo(item['materi_kelas'].length));
                   print(a);
 
-                  int lastIndex = data.bagian.length - 1;
-                  print(data.bagian[lastIndex]);
+                  var b = data.bagian.map((item) => item).map((item) {
+                    var i = item['materi_kelas'].length - 1;
+                    _last(item['materi_kelas'][i]['id']);
+                  });
+                  print(b);
+
+                  // int lastIndex = data.bagian.length - 1;
+                  // print(data.bagian[lastIndex]['id']);
                   return Column(
                     children: [
                       Center(
@@ -73,7 +84,10 @@ class ListCoursePage extends StatelessWidget {
                         shrinkWrap: true,
                         physics: NeverScrollableScrollPhysics(),
                         itemBuilder: (context, index) {
-                          return CardListCourse(bagian: data.bagian[index]);
+                          return CardListCourse(
+                            bagian: data.bagian[index],
+                            lastCourseId: lastCourseId,
+                          );
                         },
                       ),
                     ],

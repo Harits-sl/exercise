@@ -4,8 +4,11 @@ import 'package:flutter/material.dart';
 
 class CardListCourse extends StatelessWidget {
   final Map<String, dynamic> bagian;
+  final int lastCourseId;
 
-  const CardListCourse({required this.bagian, Key? key}) : super(key: key);
+  const CardListCourse(
+      {required this.bagian, required this.lastCourseId, Key? key})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +28,7 @@ class CardListCourse extends StatelessWidget {
             return ListCourse(
               id: bagian['materi_kelas'][index]['id'],
               courseTitle: bagian['materi_kelas'][index]['nama_materi'],
-              // videoId: bagian['materi_kelas'][index]['video_materi'],
+              lastCourseId: lastCourseId,
               // nextCourseTitle: bagian['materi_kelas'][index + 1]['nama_materi'],
               // nextVideoId: bagian['materi_kelas'][index + 1]['video_materi'],
             );
