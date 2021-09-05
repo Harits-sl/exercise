@@ -5,14 +5,16 @@ class ListCourse extends StatelessWidget {
   final String courseTitle;
   final int id;
   final int lastCourseId;
+  final List listCourseId;
   // final String videoId;
   // final String nextVideoId;
   // final String nextCourseTitle;
 
-  const ListCourse(
+  ListCourse(
       {required this.courseTitle,
       required this.id,
       required this.lastCourseId,
+      required this.listCourseId,
       // required this.videoId,
       // required this.nextVideoId,
       // required this.nextCourseTitle,
@@ -35,6 +37,7 @@ class ListCourse extends StatelessWidget {
                   // nextCourseTitle: nextCourseTitle,
                   id: id,
                   lastCourseId: lastCourseId,
+                  listCourseId: listCourseId,
                 ),
               ),
             );

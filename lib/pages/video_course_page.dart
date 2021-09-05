@@ -8,9 +8,13 @@ import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 class VideoCoursePage extends StatefulWidget {
   final int id;
   final int lastCourseId;
+  final List listCourseId;
 
   const VideoCoursePage(
-      {required this.id, required this.lastCourseId, Key? key})
+      {required this.id,
+      required this.lastCourseId,
+      required this.listCourseId,
+      Key? key})
       : super(key: key);
 
   @override
@@ -25,6 +29,9 @@ class _VideoCoursePageState extends State<VideoCoursePage> {
 
   @override
   Widget build(BuildContext context) {
+    var searchIndex = widget.listCourseId.indexWhere(
+      (id) => id == idNow,
+    );
     var courseProvider = Provider.of<CourseProvider>(context);
 
     var _getData = courseProvider.getVideoCourseStarter(idNow.toString());
@@ -45,6 +52,9 @@ class _VideoCoursePageState extends State<VideoCoursePage> {
                   String videoId = data.videoMateri;
                   YoutubePlayerController _controller = YoutubePlayerController(
                     initialVideoId: videoId,
+                    flags: YoutubePlayerFlags(
+                      forceHD: true,
+                    ),
                   );
                   return Column(
                     children: [
@@ -52,9 +62,6 @@ class _VideoCoursePageState extends State<VideoCoursePage> {
                         videoId: videoId,
                         controller: _controller,
                         namaMateri: data.namaMateri,
-                      ),
-                      SizedBox(
-                        height: 250,
                       ),
                       Center(
                         child: ElevatedButton(
@@ -67,8 +74,12 @@ class _VideoCoursePageState extends State<VideoCoursePage> {
                                 ),
                               );
                             }
+                            if (idNow != widget.lastCourseId) {
+                              setState(() {
+                                idNow = widget.listCourseId[searchIndex + 1];
+                              });
+                            }
                             setState(() {
-                              idNow += 1;
                               if (idNow == widget.lastCourseId) {
                                 buttonTitle = 'Finish Course';
                               }
@@ -86,6 +97,9 @@ class _VideoCoursePageState extends State<VideoCoursePage> {
                             ),
                           ),
                         ),
+                      ),
+                      SizedBox(
+                        height: 120,
                       ),
                     ],
                   );

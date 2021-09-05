@@ -4,10 +4,14 @@ import 'package:flutter/material.dart';
 
 class CardListCourse extends StatelessWidget {
   final Map<String, dynamic> bagian;
+  final List listCourseId;
   final int lastCourseId;
 
   const CardListCourse(
-      {required this.bagian, required this.lastCourseId, Key? key})
+      {required this.bagian,
+      required this.listCourseId,
+      required this.lastCourseId,
+      Key? key})
       : super(key: key);
 
   @override
@@ -26,6 +30,7 @@ class CardListCourse extends StatelessWidget {
           physics: NeverScrollableScrollPhysics(),
           itemBuilder: (context, index) {
             return ListCourse(
+              listCourseId: listCourseId,
               id: bagian['materi_kelas'][index]['id'],
               courseTitle: bagian['materi_kelas'][index]['nama_materi'],
               lastCourseId: lastCourseId,

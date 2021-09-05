@@ -1,5 +1,6 @@
 import 'package:exercise/theme.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 class VideoCourse extends StatefulWidget {
@@ -18,18 +19,38 @@ class VideoCourse extends StatefulWidget {
 }
 
 class _VideoCourseState extends State<VideoCourse> {
-  dynamic controller;
-  _VideoCourseState(this.controller);
+  dynamic _controller;
+  _VideoCourseState(this._controller);
+
+  @override
+  void deactivate() {
+    // Pauses video while navigating to next page.
+    _controller.pause();
+    super.deactivate();
+  }
 
   @override
   Widget build(BuildContext context) {
-    controller.load(widget.videoId);
+    _controller.load(widget.videoId);
+
     return YoutubePlayerBuilder(
+      // onEnterFullScreen: () {
+      //   SystemChrome.setPreferredOrientations([
+      //     DeviceOrientation.landscapeLeft,
+      //     DeviceOrientation.landscapeRight
+      //   ]);
+      // },
+      // onExitFullScreen: () {
+      //   SystemChrome.setPreferredOrientations([
+      //     DeviceOrientation.portraitUp,
+      //   ]);
+      // },
       player: YoutubePlayer(
-        controller: controller,
+        controller: _controller,
+        aspectRatio: 16 / 9,
       ),
       builder: (context, player) {
-        return Padding(
+        return Container(
           padding: const EdgeInsets.symmetric(horizontal: 15),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -37,7 +58,13 @@ class _VideoCourseState extends State<VideoCourse> {
               SizedBox(
                 height: 20,
               ),
-              player,
+              Align(
+                alignment: Alignment.center,
+                child: FittedBox(
+                  fit: BoxFit.fill,
+                  child: player,
+                ),
+              ),
               SizedBox(
                 height: 12,
               ),

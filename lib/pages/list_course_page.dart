@@ -34,6 +34,7 @@ class ListCoursePage extends StatelessWidget {
 
                   int totalVideo = 0;
                   int lastCourseId = 0;
+                  List listCourseId = [];
 
                   void _totalVideo(int number) {
                     totalVideo += number;
@@ -41,6 +42,10 @@ class ListCoursePage extends StatelessWidget {
 
                   void _last(int number) {
                     lastCourseId = number;
+                  }
+
+                  void _addList(number) {
+                    listCourseId.add(number);
                   }
 
                   var a = data.bagian
@@ -53,6 +58,13 @@ class ListCoursePage extends StatelessWidget {
                     _last(item['materi_kelas'][i]['id']);
                   });
                   print(b);
+
+                  var c = data.bagian.map((item) => item).map((item) {
+                    for (var i = 0; i < item['materi_kelas'].length; i++) {
+                      _addList(item['materi_kelas'][i]['id']);
+                    }
+                  });
+                  print(c);
 
                   // int lastIndex = data.bagian.length - 1;
                   // print(data.bagian[lastIndex]['id']);
@@ -85,6 +97,7 @@ class ListCoursePage extends StatelessWidget {
                         physics: NeverScrollableScrollPhysics(),
                         itemBuilder: (context, index) {
                           return CardListCourse(
+                            listCourseId: listCourseId,
                             bagian: data.bagian[index],
                             lastCourseId: lastCourseId,
                           );

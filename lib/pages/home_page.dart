@@ -14,6 +14,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   int i = 0;
   int j = 3;
+  int totalCourses = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -21,6 +22,11 @@ class _HomePageState extends State<HomePage> {
 
     var _getData = courseProvider.getAllCourseStarter(i, j);
 
+    var a = [];
+    for (var i = 1; i < (totalCourses / 3).round(); i++) {
+      a.add(i);
+    }
+    print('ini a $a');
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
@@ -43,8 +49,10 @@ class _HomePageState extends State<HomePage> {
                       (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
                     if (snapshot.hasData) {
                       var data = snapshot.data;
+                      int i = data['totalCourses'];
+                      totalCourses = i;
                       return Column(
-                        children: data.map<Widget>((item) {
+                        children: data['someListCourses'].map<Widget>((item) {
                           return MyCourse(
                             course: item,
                           );
@@ -59,6 +67,13 @@ class _HomePageState extends State<HomePage> {
                 SizedBox(height: 15),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  // children: a.map<Widget>((page) {
+                  //   setState(() {
+                  //     i += 3;
+                  //     j += 3;
+                  //   });
+                  //   return newMethod(_getData, courseProvider, page, i, j);
+                  // }).toList(),
                   children: [
                     InkWell(
                       onTap: () {
@@ -96,11 +111,42 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ),
                     ),
+                    // newMethod(_getData, courseProvider, totalCourses),
                   ],
                 ),
                 SizedBox(height: 15),
               ],
             ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  InkWell newMethod(Future<dynamic> _getData, CourseProvider courseProvider,
+      int page, int start, int end) {
+    // var a = [];
+    // for (var i = 1; i < (totalCourses / 3).round(); i++) {
+    //   a.add(i);
+    // }
+    // print(a);
+
+    return InkWell(
+      onTap: () {
+        setState(() {
+          _getData = courseProvider.getAllCourseStarter(start, end);
+        });
+      },
+      child: Container(
+        padding: EdgeInsets.symmetric(
+          horizontal: 10,
+          vertical: 6,
+        ),
+        color: Colors.blue,
+        child: Text(
+          page.toString(),
+          style: subTitleTextStyle.copyWith(
+            color: Colors.white,
           ),
         ),
       ),
