@@ -6,18 +6,14 @@ class ListCourse extends StatelessWidget {
   final int id;
   final int lastCourseId;
   final List listCourseId;
-  // final String videoId;
-  // final String nextVideoId;
-  // final String nextCourseTitle;
+  final String videoId;
 
   ListCourse(
       {required this.courseTitle,
       required this.id,
       required this.lastCourseId,
       required this.listCourseId,
-      // required this.videoId,
-      // required this.nextVideoId,
-      // required this.nextCourseTitle,
+      required this.videoId,
       Key? key})
       : super(key: key);
 
@@ -31,10 +27,7 @@ class ListCourse extends StatelessWidget {
               context,
               MaterialPageRoute(
                 builder: (context) => VideoCoursePage(
-                  // videoId: videoId,
-                  // courseTitle: courseTitle,
-                  // nextVideoId: nextVideoId,
-                  // nextCourseTitle: nextCourseTitle,
+                  videoId: videoId,
                   id: id,
                   lastCourseId: lastCourseId,
                   listCourseId: listCourseId,

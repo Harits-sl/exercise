@@ -11,22 +11,15 @@ class HomePage extends StatefulWidget {
   _HomePageState createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
-  int i = 0;
-  int j = 3;
-  int totalCourses = 0;
+int i = 0;
+int j = 3;
 
+class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     var courseProvider = Provider.of<CourseProvider>(context);
-
     var _getData = courseProvider.getAllCourseStarter(i, j);
 
-    var a = [];
-    for (var i = 1; i < (totalCourses / 3).round(); i++) {
-      a.add(i);
-    }
-    print('ini a $a');
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
@@ -49,14 +42,55 @@ class _HomePageState extends State<HomePage> {
                       (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
                     if (snapshot.hasData) {
                       var data = snapshot.data;
-                      int i = data['totalCourses'];
-                      totalCourses = i;
+                      int totalCourses = data['totalCourses'];
+
+                      // array berisi objek banyaknya halaman
+                      List arr = [];
+                      // start dan end untuk parameter _getData
+                      int start = 0;
+                      int end = 3;
+                      for (var k = 1; k < (totalCourses / 3).round(); k++) {
+                        var obj = {
+                          'page': k,
+                          'start': start,
+                          'end': end,
+                        };
+                        start += 3;
+                        end += 3;
+                        arr.add(obj);
+                      }
+
                       return Column(
-                        children: data['someListCourses'].map<Widget>((item) {
-                          return MyCourse(
-                            course: item,
-                          );
-                        }).toList(),
+                        children: [
+                          // widget tampilan kelas
+                          Column(
+                            children:
+                                data['someListCourses'].map<Widget>((item) {
+                              return MyCourse(
+                                course: item,
+                              );
+                            }).toList(),
+                          ),
+                          SizedBox(
+                            height: 20,
+                          ),
+                          // widget tombol halaman
+                          Container(
+                            height: 30,
+                            child: ListView(
+                              scrollDirection: Axis.horizontal,
+                              children: arr.map<Widget>((item) {
+                                return pageButton(
+                                  _getData,
+                                  courseProvider,
+                                  item['page'],
+                                  item['start'],
+                                  item['end'],
+                                );
+                              }).toList(),
+                            ),
+                          ),
+                        ],
                       );
                     }
                     return Center(
@@ -64,57 +98,6 @@ class _HomePageState extends State<HomePage> {
                     );
                   },
                 ),
-                SizedBox(height: 15),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  // children: a.map<Widget>((page) {
-                  //   setState(() {
-                  //     i += 3;
-                  //     j += 3;
-                  //   });
-                  //   return newMethod(_getData, courseProvider, page, i, j);
-                  // }).toList(),
-                  children: [
-                    InkWell(
-                      onTap: () {
-                        if (i != 0 && j != 3) {
-                          setState(() {
-                            i -= 3;
-                            j -= 3;
-                            _getData = courseProvider.getAllCourseStarter(i, j);
-                          });
-                        }
-                      },
-                      child: Container(
-                        color: i != 0 ? Colors.blue : Colors.white,
-                        child: Icon(
-                          Icons.arrow_left,
-                          size: 30,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
-                    InkWell(
-                      onTap: () {
-                        setState(() {
-                          i += 3;
-                          j += 3;
-                          _getData = courseProvider.getAllCourseStarter(i, j);
-                        });
-                      },
-                      child: Container(
-                        color: Colors.blue,
-                        child: Icon(
-                          Icons.arrow_right,
-                          size: 30,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
-                    // newMethod(_getData, courseProvider, totalCourses),
-                  ],
-                ),
-                SizedBox(height: 15),
               ],
             ),
           ),
@@ -123,26 +106,25 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  InkWell newMethod(Future<dynamic> _getData, CourseProvider courseProvider,
+  InkWell pageButton(Future<dynamic> _getData, CourseProvider courseProvider,
       int page, int start, int end) {
-    // var a = [];
-    // for (var i = 1; i < (totalCourses / 3).round(); i++) {
-    //   a.add(i);
-    // }
-    // print(a);
-
     return InkWell(
       onTap: () {
         setState(() {
+          i = start;
+          j = end;
           _getData = courseProvider.getAllCourseStarter(start, end);
         });
       },
       child: Container(
+        margin: EdgeInsets.only(
+          right: 10,
+        ),
         padding: EdgeInsets.symmetric(
           horizontal: 10,
           vertical: 6,
         ),
-        color: Colors.blue,
+        color: i == start ? Colors.indigo[700] : Colors.lightBlueAccent,
         child: Text(
           page.toString(),
           style: subTitleTextStyle.copyWith(

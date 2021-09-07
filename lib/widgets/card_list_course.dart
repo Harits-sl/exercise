@@ -34,8 +34,7 @@ class CardListCourse extends StatelessWidget {
               id: bagian['materi_kelas'][index]['id'],
               courseTitle: bagian['materi_kelas'][index]['nama_materi'],
               lastCourseId: lastCourseId,
-              // nextCourseTitle: bagian['materi_kelas'][index + 1]['nama_materi'],
-              // nextVideoId: bagian['materi_kelas'][index + 1]['video_materi'],
+              videoId: bagian['materi_kelas'][index]['video_materi'],
             );
           },
         ),

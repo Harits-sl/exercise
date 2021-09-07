@@ -19,20 +19,6 @@ class CourseProvider extends ChangeNotifier {
           data.map((item) => Course.fromJson(item)).toList();
 
       int totalCourses = listCourses.length;
-      // int b = 0;
-      // int c = 0;
-      // void a() {
-      //   if (b < totalCourses) {
-      //     b += 1;
-      //     c += 3;
-      //     print(b);
-      //     if (c <= totalCourses) {
-      //       a();
-      //     }
-      //   }
-      //   return;
-      // }
-
       // mengubah list kelas
       List someListCourses = listCourses.sublist(i, j);
 
