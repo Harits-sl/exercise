@@ -49,9 +49,9 @@ class _HomePageState extends State<HomePage> {
                       // start dan end untuk parameter _getData
                       int start = 0;
                       int end = 3;
-                      for (var k = 1; k < (totalCourses / 3).round(); k++) {
+                      for (var i = 1; i < (totalCourses / 3).round(); i++) {
                         var obj = {
-                          'page': k,
+                          'page': i,
                           'start': start,
                           'end': end,
                         };

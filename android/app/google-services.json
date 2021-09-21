@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "901885813261",
+    "project_id": "app-buildwith-angga",
+    "storage_bucket": "app-buildwith-angga.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:901885813261:android:37f4d8abd6cfae94872b44",
+        "android_client_info": {
+          "package_name": "com.buildwithangga.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "901885813261-3s1oor8n9mds8dcac5km1s8dql6otfge.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBFHd6gRgWErh77tyM24qIPIqU8DCn6WXw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "901885813261-3s1oor8n9mds8dcac5km1s8dql6otfge.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

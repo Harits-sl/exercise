@@ -1,6 +1,7 @@
 import 'package:exercise/pages/finish_course_page.dart';
 import 'package:exercise/providers/course_provider.dart';
 import 'package:exercise/theme.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
@@ -65,8 +66,6 @@ class _VideoCoursePageState extends State<VideoCoursePage> {
     var courseProvider = Provider.of<CourseProvider>(context);
 
     var _getData = courseProvider.getVideoCourseStarter(idNow.toString());
-    print(idNow);
-    print(_videoId);
     return Scaffold(
       body: SafeArea(
         child: FutureBuilder(
@@ -78,13 +77,16 @@ class _VideoCoursePageState extends State<VideoCoursePage> {
               _videoId = data.videoMateri;
               _controller.load(_videoId);
 
+              YoutubePlayer youtubePlayer = YoutubePlayer(
+                controller: _controller,
+                aspectRatio: 20 / 10,
+              );
+
               return YoutubePlayerBuilder(
-                player: YoutubePlayer(
-                  controller: _controller,
-                  aspectRatio: 16 / 9,
-                ),
+                player: youtubePlayer,
                 builder: (context, player) {
-                  var elevatedButton = ElevatedButton(
+                  // button next video and finish course
+                  ElevatedButton elevatedButton = ElevatedButton(
                     onPressed: () {
                       if (idNow == widget.lastCourseId) {
                         Navigator.pushReplacement(
@@ -125,7 +127,10 @@ class _VideoCoursePageState extends State<VideoCoursePage> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        player,
+                        AspectRatio(
+                          aspectRatio: 16 / 9,
+                          child: player,
+                        ),
                         SizedBox(
                           height: 12,
                         ),
