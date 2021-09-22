@@ -7,29 +7,29 @@ import 'package:flutter/material.dart';
 class CourseProvider extends ChangeNotifier {
   final String baseUrl = 'https://bwasandbox.com';
 
-  Future getAllCourseStarter(int i, int j) async {
-    String url = '$baseUrl/api/course-starter';
+  // Future getAllCourseStarter(int i, int j) async {
+  //   String url = '$baseUrl/api/course-starter';
 
-    var apiResult = await http.get(Uri.parse(url));
+  //   var apiResult = await http.get(Uri.parse(url));
 
-    if (apiResult.statusCode == 200) {
-      List data = jsonDecode(apiResult.body);
+  //   if (apiResult.statusCode == 200) {
+  //     List data = jsonDecode(apiResult.body);
 
-      List<Course> listCourses =
-          data.map((item) => Course.fromJson(item)).toList();
+  //     List<Course> listCourses =
+  //         data.map((item) => Course.fromJson(item)).toList();
 
-      int totalCourses = listCourses.length;
-      // mengubah list kelas
-      List someListCourses = listCourses.sublist(i, j);
+  //     int totalCourses = listCourses.length;
+  //     // mengubah list kelas
+  //     List someListCourses = listCourses.sublist(i, j);
 
-      var obj = {
-        'totalCourses': totalCourses,
-        'someListCourses': someListCourses,
-      };
+  //     var obj = {
+  //       'totalCourses': totalCourses,
+  //       'someListCourses': someListCourses,
+  //     };
 
-      return obj;
-    }
-  }
+  //     return obj;
+  //   }
+  // }
 
   Future getDetailCourseStarter(String id) async {
     String url = '$baseUrl/api/course-starter/$id';
