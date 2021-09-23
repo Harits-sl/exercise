@@ -1,6 +1,5 @@
 import 'package:exercise/pages/list_course_page.dart';
 import 'package:flutter/material.dart';
-
 import 'package:exercise/models/course_starter_model.dart';
 import 'package:exercise/theme.dart';
 
@@ -14,7 +13,12 @@ class CardCourse extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Row iconStar() {
+    addComma(String data) {
+      return data.replaceAllMapped(
+          RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},');
+    }
+
+    Widget iconStar() {
       return Row(
         children: [
           Image.asset(
@@ -118,7 +122,7 @@ class CardCourse extends StatelessWidget {
                         width: 4,
                       ),
                       Text(
-                        '(${course.joinedAmount})',
+                        '(${addComma(course.joinedAmount.toString())})',
                         style: darkBlueTextStyle.copyWith(
                           fontWeight: medium,
                           fontSize: 10,
