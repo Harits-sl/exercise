@@ -7,22 +7,27 @@ TextStyle subTitleTextStyle =
 
 double defaultMargin = 28.0;
 
-Color blueColor = Color(0xff2079FF);
-Color darkBlueColor = Color(0xff343648);
-Color greyColor = Color(0xff999AA3);
-Color whiteColor = Color(0xffFFFFFF);
+// Color blueColor = Color(0xff2447F9);
+// Color blackColor = Color(0xff34364A);
+// Color greyColor = Color(0xff999AA3);
+// Color whiteColor = Color(0xffFFFFFF);
 
-TextStyle blueTextStyle = GoogleFonts.poppins(
-  color: blueColor,
-);
-TextStyle darkBlueTextStyle = GoogleFonts.poppins(
+Color blueColor = Color(0xff2447F9);
+Color darkBlueColor = Color(0xff34364A);
+Color greyTextColor = Color(0xff999AA4);
+Color whiteColor = Color(0xffFFFFFF);
+Color secondaryButtonColor = Color(0xffE5E9F2);
+Color backgroundColor = Color(0xffF6F8FD);
+Color ratingColor = Color(0xffE9A748);
+
+TextStyle primaryTextStyle = GoogleFonts.poppins(
   color: darkBlueColor,
 );
-TextStyle greyTextStyle = GoogleFonts.poppins(
-  color: greyColor,
+TextStyle secondaryTextStyle = GoogleFonts.poppins(
+  color: greyTextColor,
 );
-TextStyle whiteTextStyle = GoogleFonts.poppins(
-  color: whiteColor,
+TextStyle blueTextStyle = GoogleFonts.poppins(
+  color: blueColor,
 );
 
 FontWeight light = FontWeight.w300;

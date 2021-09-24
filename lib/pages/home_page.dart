@@ -1,7 +1,9 @@
+import 'package:exercise/pages/search_page.dart';
 import 'package:exercise/providers/course_starter_provider.dart';
 import 'package:exercise/theme.dart';
 import 'package:exercise/widgets/card_course.dart';
 import 'package:exercise/widgets/category_item.dart';
+import 'package:exercise/widgets/custom_search_delegate.dart';
 import 'package:exercise/widgets/navbar_item.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -29,7 +31,7 @@ class HomePage extends StatelessWidget {
               children: [
                 Text(
                   'Howdy, Bimo',
-                  style: darkBlueTextStyle.copyWith(
+                  style: primaryTextStyle.copyWith(
                     fontWeight: semiBold,
                     fontSize: 16,
                   ),
@@ -39,7 +41,7 @@ class HomePage extends StatelessWidget {
                 ),
                 Text(
                   'Mau Belajar Apa Hari Ini?',
-                  style: greyTextStyle.copyWith(
+                  style: secondaryTextStyle.copyWith(
                     fontWeight: regular,
                     fontSize: 12,
                   ),
@@ -56,36 +58,91 @@ class HomePage extends StatelessWidget {
       );
     }
 
+    // search lama
+    // Widget search() {
+    //   return Container(
+    //     height: 45,
+    //     margin: EdgeInsets.only(
+    //       top: defaultMargin,
+    //       left: defaultMargin,
+    //       right: defaultMargin,
+    //     ),
+    //     decoration: BoxDecoration(
+    //       color: whiteColor,
+    //       borderRadius: BorderRadius.circular(12),
+    //     ),
+    //     child: TextField(
+    //       style: darkBlueTextStyle.copyWith(
+    //         fontWeight: regular,
+    //         fontSize: 14,
+    //       ),
+    //       decoration: InputDecoration(
+    //         hintText: 'Cari kelas yang ingin kamu pelajari',
+    //         hintStyle: greyTextStyle.copyWith(
+    //           fontWeight: regular,
+    //           fontSize: 12,
+    //         ),
+    //         prefixIcon: Container(
+    //           margin: EdgeInsets.all(12),
+    //           child: Image.asset(
+    //             'assets/icon_search.png',
+    //             width: 24,
+    //           ),
+    //         ),
+    //         border: InputBorder.none,
+    //       ),
+    //     ),
+    //   );
+    // }
+
+    // search baru
     Widget search() {
-      return Container(
-        margin: EdgeInsets.only(
-          top: defaultMargin,
-          left: defaultMargin,
-          right: defaultMargin,
-        ),
-        decoration: BoxDecoration(
-          color: whiteColor,
-          borderRadius: BorderRadius.circular(100),
-        ),
-        child: TextField(
-          style: darkBlueTextStyle.copyWith(
-            fontWeight: regular,
-            fontSize: 14,
+      return GestureDetector(
+        onTap: () {
+          // Navigator.push(
+          // context,
+          // MaterialPageRoute(
+          //   builder: (context) => SearchPage(
+          //   ),
+          // ),
+          // );
+
+          showSearch(
+            context: context,
+            delegate: CustomSearchDelegate(),
+          );
+        },
+        child: Container(
+          height: 45,
+          margin: EdgeInsets.only(
+            top: defaultMargin,
+            left: defaultMargin,
+            right: defaultMargin,
           ),
-          decoration: InputDecoration(
-            hintText: 'Cari kelas yang ingin kamu pelajari',
-            hintStyle: greyTextStyle.copyWith(
-              fontWeight: regular,
-              fontSize: 12,
-            ),
-            prefixIcon: Container(
-              margin: EdgeInsets.all(12),
-              child: Image.asset(
+          decoration: BoxDecoration(
+            color: whiteColor,
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Row(
+            children: [
+              SizedBox(
+                width: 12,
+              ),
+              Image.asset(
                 'assets/icon_search.png',
                 width: 24,
               ),
-            ),
-            border: InputBorder.none,
+              SizedBox(
+                width: 6,
+              ),
+              Text(
+                'Cari kelas yang ingin kamu pelajari',
+                style: secondaryTextStyle.copyWith(
+                  fontWeight: regular,
+                  fontSize: 14,
+                ),
+              ),
+            ],
           ),
         ),
       );
@@ -127,7 +184,7 @@ class HomePage extends StatelessWidget {
                 children: [
                   Text(
                     'Terakhir yang kamu pelajari',
-                    style: greyTextStyle.copyWith(
+                    style: secondaryTextStyle.copyWith(
                       fontWeight: regular,
                       fontSize: 12,
                     ),
@@ -137,7 +194,7 @@ class HomePage extends StatelessWidget {
                   ),
                   Text(
                     'Full-Stack Laravel Flutter 2021: Building E-Commerce and Chat Apps',
-                    style: darkBlueTextStyle.copyWith(
+                    style: primaryTextStyle.copyWith(
                       fontWeight: semiBold,
                       fontSize: 14,
                     ),
@@ -166,7 +223,7 @@ class HomePage extends StatelessWidget {
                 children: [
                   Text(
                     title,
-                    style: darkBlueTextStyle.copyWith(
+                    style: primaryTextStyle.copyWith(
                       fontWeight: semiBold,
                       fontSize: 16,
                     ),
@@ -181,7 +238,7 @@ class HomePage extends StatelessWidget {
                         'Lihat semua',
                         style: blueTextStyle.copyWith(
                           fontWeight: medium,
-                          fontSize: 10,
+                          fontSize: 12,
                         ),
                       ),
                     ),
@@ -242,7 +299,7 @@ class HomePage extends StatelessWidget {
               padding: EdgeInsets.symmetric(horizontal: defaultMargin),
               child: Text(
                 'Kategori Kelas',
-                style: darkBlueTextStyle.copyWith(
+                style: primaryTextStyle.copyWith(
                   fontWeight: semiBold,
                   fontSize: 16,
                 ),
@@ -316,7 +373,7 @@ class HomePage extends StatelessWidget {
     }
 
     return Scaffold(
-      backgroundColor: Color(0xffF6F8FD),
+      backgroundColor: backgroundColor,
       bottomNavigationBar: navbar(),
       body: SafeArea(
         child: ListView(

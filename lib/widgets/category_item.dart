@@ -35,7 +35,7 @@ class CategoryItem extends StatelessWidget {
           ),
           Text(
             name,
-            style: darkBlueTextStyle.copyWith(
+            style: primaryTextStyle.copyWith(
               fontWeight: semiBold,
               fontSize: 12,
             ),
@@ -45,7 +45,7 @@ class CategoryItem extends StatelessWidget {
           ),
           Text(
             '$totalCouse Total Course',
-            style: greyTextStyle.copyWith(
+            style: secondaryTextStyle.copyWith(
               fontWeight: medium,
               fontSize: 10,
             ),
