@@ -14,7 +14,7 @@ double defaultMargin = 28.0;
 
 Color blueColor = Color(0xff2447F9);
 Color darkBlueColor = Color(0xff34364A);
-Color greyTextColor = Color(0xff999AA4);
+Color greyColor = Color(0xff999AA4);
 Color whiteColor = Color(0xffFFFFFF);
 Color secondaryButtonColor = Color(0xffE5E9F2);
 Color backgroundColor = Color(0xffF6F8FD);
@@ -24,7 +24,7 @@ TextStyle primaryTextStyle = GoogleFonts.poppins(
   color: darkBlueColor,
 );
 TextStyle secondaryTextStyle = GoogleFonts.poppins(
-  color: greyTextColor,
+  color: greyColor,
 );
 TextStyle blueTextStyle = GoogleFonts.poppins(
   color: blueColor,

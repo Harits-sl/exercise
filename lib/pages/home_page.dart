@@ -58,59 +58,20 @@ class HomePage extends StatelessWidget {
       );
     }
 
-    // search lama
-    // Widget search() {
-    //   return Container(
-    //     height: 45,
-    //     margin: EdgeInsets.only(
-    //       top: defaultMargin,
-    //       left: defaultMargin,
-    //       right: defaultMargin,
-    //     ),
-    //     decoration: BoxDecoration(
-    //       color: whiteColor,
-    //       borderRadius: BorderRadius.circular(12),
-    //     ),
-    //     child: TextField(
-    //       style: darkBlueTextStyle.copyWith(
-    //         fontWeight: regular,
-    //         fontSize: 14,
-    //       ),
-    //       decoration: InputDecoration(
-    //         hintText: 'Cari kelas yang ingin kamu pelajari',
-    //         hintStyle: greyTextStyle.copyWith(
-    //           fontWeight: regular,
-    //           fontSize: 12,
-    //         ),
-    //         prefixIcon: Container(
-    //           margin: EdgeInsets.all(12),
-    //           child: Image.asset(
-    //             'assets/icon_search.png',
-    //             width: 24,
-    //           ),
-    //         ),
-    //         border: InputBorder.none,
-    //       ),
-    //     ),
-    //   );
-    // }
-
-    // search baru
     Widget search() {
       return GestureDetector(
         onTap: () {
-          // Navigator.push(
-          // context,
-          // MaterialPageRoute(
-          //   builder: (context) => SearchPage(
-          //   ),
-          // ),
-          // );
-
-          showSearch(
-            context: context,
-            delegate: CustomSearchDelegate(),
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => SearchPage(),
+            ),
           );
+
+          // showSearch(
+          //   context: context,
+          //   delegate: CustomSearchDelegate(),
+          // );
         },
         child: Container(
           height: 45,
@@ -252,35 +213,36 @@ class HomePage extends StatelessWidget {
             Container(
               height: 212,
               child: FutureBuilder<dynamic>(
-                  future: courseStarterProvider.getAllCourseStarter(),
-                  builder: (context, snapshot) {
-                    if (snapshot.hasData) {
-                      var data = snapshot.data;
-                      int index = 0;
+                future: courseStarterProvider.getAllCourseStarter(),
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    var data = snapshot.data;
+                    int index = 0;
 
-                      return ListView(
-                        scrollDirection: Axis.horizontal,
-                        children: data.sublist(0, 2).map<Widget>((item) {
-                          index++;
-                          return Container(
-                            margin: EdgeInsets.only(
-                              left: index == 1 ? defaultMargin : 14,
-                              right: index == 2 ? defaultMargin : 0,
-                            ),
-                            child: CardCourse(
-                              course: item,
-                            ),
-                          );
-                        }).toList(),
-                        // CardCourse(
-                        //   course: data,
-                        // ),
-                      );
-                    }
-                    return Center(
-                      child: CircularProgressIndicator(),
+                    return ListView(
+                      scrollDirection: Axis.horizontal,
+                      children: data.sublist(0, 2).map<Widget>((item) {
+                        index++;
+                        return Container(
+                          margin: EdgeInsets.only(
+                            left: index == 1 ? defaultMargin : 14,
+                            right: index == 2 ? defaultMargin : 0,
+                          ),
+                          child: CardCourse(
+                            course: item,
+                          ),
+                        );
+                      }).toList(),
+                      // CardCourse(
+                      //   course: data,
+                      // ),
                     );
-                  }),
+                  }
+                  return Center(
+                    child: CircularProgressIndicator(),
+                  );
+                },
+              ),
             ),
           ],
         ),
