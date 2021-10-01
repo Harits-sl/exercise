@@ -100,6 +100,7 @@ class ListCoursePage extends StatelessWidget {
                             listCourseId: listCourseId,
                             bagian: data.bagian[index],
                             lastCourseId: lastCourseId,
+                            imageUrl: data.thumbnailKelas,
                           );
                         },
                       ),

@@ -5,11 +5,27 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 
 class CourseStarterProvider with ChangeNotifier {
-  final String baseUrl = 'https://bwasandbox.com';
-
-  Future<dynamic> getAllCourseStarter() async {
+  Future<dynamic> getAllFreeCourse() async {
     try {
-      var apiResult = await http.get(Uri.parse('$baseUrl/api/course-starter'));
+      var apiResult =
+          await http.get(Uri.parse('https://bwasandbox.com/api/course-free'));
+
+      if (apiResult.statusCode == 200) {
+        List data = jsonDecode(apiResult.body);
+        List<CourseStarterModel> listCourses =
+            data.map((item) => CourseStarterModel.fromJson(item)).toList();
+
+        return listCourses;
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  Future<dynamic> getAllTopFeatureCourse() async {
+    try {
+      var apiResult =
+          await http.get(Uri.parse('https://bwasandbox.com/api/course-top'));
 
       if (apiResult.statusCode == 200) {
         List data = jsonDecode(apiResult.body);

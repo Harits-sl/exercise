@@ -4,7 +4,7 @@ import 'package:exercise/models/course.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 
-class CourseProvider extends ChangeNotifier {
+class CourseProvider with ChangeNotifier {
   final String baseUrl = 'https://bwasandbox.com';
 
   // Future getAllCourseStarter(int i, int j) async {

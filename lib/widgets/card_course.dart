@@ -1,5 +1,7 @@
+import 'package:exercise/pages/detail_course_page.dart';
 import 'package:exercise/pages/list_course_page.dart';
 import 'package:exercise/utils/add_comma.dart';
+import 'package:exercise/widgets/icon_star.dart';
 import 'package:flutter/material.dart';
 import 'package:exercise/models/course_starter_model.dart';
 import 'package:exercise/theme.dart';
@@ -14,31 +16,14 @@ class CardCourse extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Widget iconStar() {
-      return Row(
-        children: [
-          Image.asset(
-            'assets/icon_star.png',
-            width: 14,
-          ),
-          SizedBox(
-            width: 1,
-          ),
-        ],
-      );
-    }
-
     return InkWell(
       borderRadius: BorderRadius.circular(12),
       onTap: () {
+        print(course.id);
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => ListCoursePage(
-              id: course.id,
-              title: course.namaKelas,
-              totalVideo: '12,590',
-            ),
+            builder: (context) => DetailCoursePage(id: course.id),
           ),
         );
       },
@@ -109,11 +94,7 @@ class CardCourse extends StatelessWidget {
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      iconStar(),
-                      iconStar(),
-                      iconStar(),
-                      iconStar(),
-                      iconStar(),
+                      IconStar(),
                       SizedBox(
                         width: 4,
                       ),

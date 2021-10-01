@@ -1,29 +1,18 @@
 import 'package:exercise/models/course_starter_model.dart';
+import 'package:exercise/models/search_model.dart';
 import 'package:exercise/pages/list_course_page.dart';
+import 'package:exercise/providers/search_provider.dart';
 import 'package:exercise/theme.dart';
 import 'package:exercise/utils/add_comma.dart';
+import 'package:exercise/widgets/icon_star.dart';
 import 'package:flutter/material.dart';
 
 class SearchResultItem extends StatelessWidget {
-  final CourseStarterModel course;
+  final SearchModel course;
   const SearchResultItem({Key? key, required this.course}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    Widget iconStar() {
-      return Row(
-        children: [
-          Image.asset(
-            'assets/icon_star.png',
-            width: 14,
-          ),
-          SizedBox(
-            width: 1,
-          ),
-        ],
-      );
-    }
-
     return GestureDetector(
       onTap: () {
         Navigator.push(
@@ -107,11 +96,7 @@ class SearchResultItem extends StatelessWidget {
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      iconStar(),
-                      iconStar(),
-                      iconStar(),
-                      iconStar(),
-                      iconStar(),
+                      IconStar(),
                       SizedBox(
                         width: 4,
                       ),

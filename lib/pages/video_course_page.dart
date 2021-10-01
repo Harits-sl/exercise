@@ -79,7 +79,7 @@ class _VideoCoursePageState extends State<VideoCoursePage> {
 
               YoutubePlayer youtubePlayer = YoutubePlayer(
                 controller: _controller,
-                aspectRatio: 20 / 10,
+                aspectRatio: 16 / 9,
               );
 
               return YoutubePlayerBuilder(
@@ -141,6 +141,14 @@ class _VideoCoursePageState extends State<VideoCoursePage> {
                         Spacer(),
                         Center(
                           child: elevatedButton,
+                        ),
+                        ElevatedButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          child: Text(
+                            'keluar',
+                          ),
                         ),
                         SizedBox(
                           height: 100,

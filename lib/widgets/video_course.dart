@@ -1,81 +1,98 @@
-// import 'package:exercise/theme.dart';
-// import 'package:flutter/material.dart';
-// import 'package:flutter/services.dart';
-// import 'package:youtube_player_flutter/youtube_player_flutter.dart';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
-// class VideoCourse extends StatefulWidget {
-//   final String videoId;
-//   final String namaMateri;
-//   final dynamic controller;
-//   const VideoCourse(
-//       {required this.videoId,
-//       required this.namaMateri,
-//       this.controller,
-//       Key? key})
-//       : super(key: key);
+import 'package:exercise/providers/youtube_id_provider.dart';
 
-//   @override
-//   _VideoCourseState createState() => _VideoCourseState(controller);
-// }
+class VideoCourse extends StatefulWidget {
+  final String youtubeId;
 
-// class _VideoCourseState extends State<VideoCourse> {
-//   dynamic _controller;
-//   _VideoCourseState(this._controller);
+  const VideoCourse({
+    Key? key,
+    required this.youtubeId,
+  }) : super(key: key);
 
-//   @override
-//   void deactivate() {
-//     // Pauses video while navigating to next page.
-//     _controller.pause();
-//     super.deactivate();
-//   }
+  @override
+  _VideoCourseState createState() => _VideoCourseState();
+}
 
-//   @override
-//   Widget build(BuildContext context) {
-//     _controller.load(widget.videoId);
+class _VideoCourseState extends State<VideoCourse> {
+  late YoutubePlayerController _controller;
+  late TextEditingController _idController;
+  late TextEditingController _seekToController;
 
-//     return YoutubePlayerBuilder(
-//       // onEnterFullScreen: () {
-//       //   SystemChrome.setPreferredOrientations([
-//       //     DeviceOrientation.landscapeLeft,
-//       //     DeviceOrientation.landscapeRight
-//       //   ]);
-//       // },
-//       // onExitFullScreen: () {
-//       //   SystemChrome.setPreferredOrientations([
-//       //     DeviceOrientation.portraitUp,
-//       //   ]);
-//       // },
-//       player: YoutubePlayer(
-//         controller: _controller,
-//         aspectRatio: 16 / 9,
-//       ),
-//       builder: (context, player) {
-//         return Container(
-//           padding: const EdgeInsets.symmetric(horizontal: 15),
-//           child: Column(
-//             crossAxisAlignment: CrossAxisAlignment.start,
-//             children: [
-//               SizedBox(
-//                 height: 20,
-//               ),
-//               Align(
-//                 alignment: Alignment.center,
-//                 child: FittedBox(
-//                   fit: BoxFit.fill,
-//                   child: player,
-//                 ),
-//               ),
-//               SizedBox(
-//                 height: 12,
-//               ),
-//               Text(
-//                 widget.namaMateri,
-//                 style: subTitleTextStyle,
-//               ),
-//             ],
-//           ),
-//         );
-//       },
-//     );
-//   }
-// }
+  late PlayerState _playerState;
+  late YoutubeMetaData _videoMetaData;
+  bool _isPlayerReady = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = YoutubePlayerController(
+      initialVideoId: widget.youtubeId,
+      flags: const YoutubePlayerFlags(
+        mute: false,
+        autoPlay: true,
+        disableDragSeek: false,
+        loop: false,
+        isLive: false,
+        forceHD: false,
+        enableCaption: true,
+      ),
+    )..addListener(listener);
+    _idController = TextEditingController();
+    _seekToController = TextEditingController();
+    _videoMetaData = const YoutubeMetaData();
+    _playerState = PlayerState.unknown;
+  }
+
+  void listener() {
+    if (_isPlayerReady && mounted && !_controller.value.isFullScreen) {
+      setState(() {
+        _playerState = _controller.value.playerState;
+        _videoMetaData = _controller.metadata;
+      });
+    }
+  }
+
+  @override
+  void deactivate() {
+    // Pauses video while navigating to next page.
+    _controller.pause();
+    super.deactivate();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    _idController.dispose();
+    _seekToController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    YoutubePlayer youtubePlayer = YoutubePlayer(
+      controller: _controller,
+      // aspect ratio ketika landscape
+      aspectRatio: 19 / 9,
+    );
+    Widget youtubePlayerHierarchy() {
+      return YoutubePlayerBuilder(
+        player: youtubePlayer,
+        builder: (context, player) {
+          return Column(
+            children: [
+              AspectRatio(
+                aspectRatio: 16 / 9,
+                child: player,
+              ),
+            ],
+          );
+        },
+      );
+    }
+
+    return youtubePlayerHierarchy();
+  }
+}

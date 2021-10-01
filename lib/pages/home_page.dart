@@ -1,5 +1,6 @@
 import 'package:exercise/pages/search_page.dart';
 import 'package:exercise/providers/course_starter_provider.dart';
+import 'package:exercise/providers/last_studied_provider.dart';
 import 'package:exercise/theme.dart';
 import 'package:exercise/widgets/card_course.dart';
 import 'package:exercise/widgets/category_item.dart';
@@ -14,7 +15,7 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var courseStarterProvider = Provider.of<CourseStarterProvider>(context);
-
+    var lastStudiedProvider = Provider.of<LastStudiedProvider>(context);
     // method widget
     Widget header() {
       return Container(
@@ -110,67 +111,70 @@ class HomePage extends StatelessWidget {
     }
 
     Widget latestCourse() {
-      return Container(
-        margin: EdgeInsets.only(
-          top: defaultMargin,
-          left: defaultMargin,
-          right: defaultMargin,
-        ),
-        padding: EdgeInsets.only(
-          top: 12,
-          bottom: 12,
-          left: 12,
-          right: 15,
-        ),
-        decoration: BoxDecoration(
-          color: whiteColor,
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: Row(
-          children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(12),
-              child: Image.asset(
-                'assets/latest_course.png',
-                width: 60,
-                fit: BoxFit.cover,
+      return lastStudiedProvider.lastCourse == null
+          ? Container()
+          : Container(
+              margin: EdgeInsets.only(
+                top: defaultMargin,
+                left: defaultMargin,
+                right: defaultMargin,
               ),
-            ),
-            SizedBox(
-              width: 14,
-            ),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              padding: EdgeInsets.only(
+                top: 12,
+                bottom: 12,
+                left: 12,
+                right: 15,
+              ),
+              decoration: BoxDecoration(
+                color: whiteColor,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Row(
                 children: [
-                  Text(
-                    'Terakhir yang kamu pelajari',
-                    style: secondaryTextStyle.copyWith(
-                      fontWeight: regular,
-                      fontSize: 12,
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(12),
+                    child: Image.network(
+                      'https://bwasandbox.com${lastStudiedProvider.lastCourse['imageUrl']}',
+                      width: 60,
+                      height: 60,
+                      fit: BoxFit.cover,
                     ),
                   ),
                   SizedBox(
-                    height: 2,
+                    width: 14,
                   ),
-                  Text(
-                    'Full-Stack Laravel Flutter 2021: Building E-Commerce and Chat Apps',
-                    style: primaryTextStyle.copyWith(
-                      fontWeight: semiBold,
-                      fontSize: 14,
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Terakhir yang kamu pelajari',
+                          style: secondaryTextStyle.copyWith(
+                            fontWeight: regular,
+                            fontSize: 12,
+                          ),
+                        ),
+                        SizedBox(
+                          height: 2,
+                        ),
+                        Text(
+                          lastStudiedProvider.lastCourse['namaKelas'],
+                          style: primaryTextStyle.copyWith(
+                            fontWeight: semiBold,
+                            fontSize: 14,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ],
                     ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
                   ),
                 ],
               ),
-            ),
-          ],
-        ),
-      );
+            );
     }
 
-    Widget course(String title) {
+    Widget course(bool isTopFeatured) {
       return Container(
         padding: EdgeInsets.only(
           top: defaultMargin,
@@ -183,7 +187,7 @@ class HomePage extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    title,
+                    isTopFeatured ? 'Top Featured' : 'New Free Course',
                     style: primaryTextStyle.copyWith(
                       fontWeight: semiBold,
                       fontSize: 16,
@@ -213,7 +217,9 @@ class HomePage extends StatelessWidget {
             Container(
               height: 212,
               child: FutureBuilder<dynamic>(
-                future: courseStarterProvider.getAllCourseStarter(),
+                future: isTopFeatured
+                    ? courseStarterProvider.getAllTopFeatureCourse()
+                    : courseStarterProvider.getAllFreeCourse(),
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
                     var data = snapshot.data;
@@ -343,8 +349,8 @@ class HomePage extends StatelessWidget {
             header(),
             search(),
             latestCourse(),
-            course('New Free Course'),
-            course('Top Featured'),
+            course(false),
+            course(true),
             classCategory(),
           ],
         ),

@@ -29,6 +29,9 @@ TextStyle secondaryTextStyle = GoogleFonts.poppins(
 TextStyle blueTextStyle = GoogleFonts.poppins(
   color: blueColor,
 );
+TextStyle whiteTextStyle = GoogleFonts.poppins(
+  color: whiteColor,
+);
 
 FontWeight light = FontWeight.w300;
 FontWeight regular = FontWeight.w400;

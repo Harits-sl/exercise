@@ -6,11 +6,13 @@ class CardListCourse extends StatelessWidget {
   final Map<String, dynamic> bagian;
   final List listCourseId;
   final int lastCourseId;
+  final String imageUrl;
 
   const CardListCourse(
       {required this.bagian,
       required this.listCourseId,
       required this.lastCourseId,
+      required this.imageUrl,
       Key? key})
       : super(key: key);
 
@@ -35,6 +37,7 @@ class CardListCourse extends StatelessWidget {
               courseTitle: bagian['materi_kelas'][index]['nama_materi'],
               lastCourseId: lastCourseId,
               videoId: bagian['materi_kelas'][index]['video_materi'],
+              imageUrl: imageUrl,
             );
           },
         ),

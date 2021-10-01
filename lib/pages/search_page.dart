@@ -1,4 +1,5 @@
 import 'package:exercise/providers/course_starter_provider.dart';
+import 'package:exercise/providers/search_provider.dart';
 import 'package:exercise/theme.dart';
 import 'package:exercise/widgets/search_result_item.dart';
 import 'package:flutter/material.dart';
@@ -14,30 +15,36 @@ class SearchPage extends StatefulWidget {
 class _SearchPageState extends State<SearchPage> {
   final TextEditingController _queryTextController = TextEditingController();
 
-  bool isSearch = true;
-
   @override
   Widget build(BuildContext context) {
-    var courseStarterProvider = Provider.of<CourseStarterProvider>(context);
+    var searchProvider = Provider.of<SearchProvider>(context);
+
     Widget suggestionItem(text) {
-      return Container(
-        decoration: BoxDecoration(
-          color: secondaryButtonColor,
-          borderRadius: BorderRadius.circular(100),
-        ),
-        padding: EdgeInsets.symmetric(
-          vertical: 4,
-          horizontal: 12,
-        ),
-        margin: EdgeInsets.only(
-          right: 12,
-          top: 12,
-        ),
-        child: Text(
-          text,
-          style: primaryTextStyle.copyWith(
-            fontWeight: medium,
-            fontSize: 12,
+      return GestureDetector(
+        onTap: () {
+          searchProvider.isSearch = false;
+          searchProvider.query = text;
+          _queryTextController.text = text;
+        },
+        child: Container(
+          decoration: BoxDecoration(
+            color: secondaryButtonColor,
+            borderRadius: BorderRadius.circular(100),
+          ),
+          padding: EdgeInsets.symmetric(
+            vertical: 4,
+            horizontal: 12,
+          ),
+          margin: EdgeInsets.only(
+            right: 12,
+            top: 12,
+          ),
+          child: Text(
+            text,
+            style: primaryTextStyle.copyWith(
+              fontWeight: medium,
+              fontSize: 12,
+            ),
           ),
         ),
       );
@@ -53,7 +60,10 @@ class _SearchPageState extends State<SearchPage> {
             Icons.arrow_back,
             color: Colors.black,
           ),
-          onPressed: () => Navigator.pop(context),
+          onPressed: () {
+            searchProvider.isSearch = true;
+            Navigator.pop(context);
+          },
         ),
         title: Container(
           height: 38,
@@ -61,10 +71,8 @@ class _SearchPageState extends State<SearchPage> {
           child: TextField(
             controller: _queryTextController,
             onSubmitted: (String _) {
-              print(_queryTextController.text);
-              setState(() {
-                isSearch = false;
-              });
+              searchProvider.query = _queryTextController.text;
+              searchProvider.isSearch = false;
             },
             autofocus: true,
             style: primaryTextStyle.copyWith(
@@ -109,29 +117,17 @@ class _SearchPageState extends State<SearchPage> {
             Text(
               'Paling Dicari:',
             ),
-            Row(
+            Wrap(
               children: [
                 suggestionItem('Flutter'),
                 suggestionItem('Laravel'),
                 suggestionItem('Adobe Premiere'),
-              ],
-            ),
-            Row(
-              children: [
                 suggestionItem('React'),
                 suggestionItem('React Native'),
                 suggestionItem('Javascript'),
-              ],
-            ),
-            Row(
-              children: [
                 suggestionItem('Figma'),
                 suggestionItem('Adobe XD'),
                 suggestionItem('UI Design'),
-              ],
-            ),
-            Row(
-              children: [
                 suggestionItem('UX Design'),
               ],
             ),
@@ -148,11 +144,10 @@ class _SearchPageState extends State<SearchPage> {
           right: defaultMargin,
         ),
         child: FutureBuilder<dynamic>(
-          future: courseStarterProvider.getAllCourseStarter(),
+          future: searchProvider.searchCourse(),
           builder: (context, snapshot) {
             if (snapshot.hasData) {
-              var data = snapshot.data.sublist(0, 7);
-              print(data);
+              var data = snapshot.data;
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -187,7 +182,7 @@ class _SearchPageState extends State<SearchPage> {
     }
 
     Widget body() {
-      if (!isSearch) {
+      if (!searchProvider.isSearch) {
         return result();
       }
       return suggestions();
