@@ -1,3 +1,4 @@
+import 'package:exercise/providers/object_detail.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
@@ -72,6 +73,12 @@ class _VideoCourseState extends State<VideoCourse> {
 
   @override
   Widget build(BuildContext context) {
+    var objectDetailProvider = Provider.of<ObjectDetailProvider>(context);
+
+    if (objectDetailProvider.materi['videoMateri'] != null) {
+      _controller.load(objectDetailProvider.materi['videoMateri']);
+    }
+
     YoutubePlayer youtubePlayer = YoutubePlayer(
       controller: _controller,
       // aspect ratio ketika landscape

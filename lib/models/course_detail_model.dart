@@ -12,6 +12,7 @@ class CourseDetailModel {
   final List personas;
   final List authors;
   final Map category;
+  final List tools;
 
   CourseDetailModel({
     required this.id,
@@ -27,6 +28,7 @@ class CourseDetailModel {
     required this.personas,
     required this.authors,
     required this.category,
+    required this.tools,
   });
 
   factory CourseDetailModel.fromJson(Map<String, dynamic> json) {
@@ -41,10 +43,11 @@ class CourseDetailModel {
       tagline: json['tagline'] ?? '',
       joinedAmount: json['joined_amount'] ?? '',
       bagian: json['bagian'] ?? [],
-      keyPoints: json['key_points'] ?? [],
+      keyPoints: json['keypoints'] ?? [],
       personas: json['personas'] ?? [],
       authors: json['authors'] ?? [],
       category: json['category'] ?? {},
+      tools: json['tools'] ?? [],
     );
   }
 }

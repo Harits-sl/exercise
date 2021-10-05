@@ -2,7 +2,9 @@ import 'package:exercise/pages/splash_screen.dart';
 import 'package:exercise/providers/course_provider.dart';
 import 'package:exercise/providers/course_starter_provider.dart';
 import 'package:exercise/providers/course_detail_provider.dart';
+import 'package:exercise/providers/course_video_detail_provider.dart';
 import 'package:exercise/providers/last_studied_provider.dart';
+import 'package:exercise/providers/object_detail.dart';
 import 'package:exercise/providers/search_provider.dart';
 import 'package:exercise/providers/youtube_id_provider.dart';
 import 'package:flutter/material.dart';
@@ -34,6 +36,12 @@ class MyApp extends StatelessWidget {
         ),
         Provider<YoutubeIdProvider>(
           create: (context) => YoutubeIdProvider(),
+        ),
+        ChangeNotifierProvider<ObjectDetailProvider>(
+          create: (context) => ObjectDetailProvider(),
+        ),
+        ChangeNotifierProvider<CourseVideoDetailProvider>(
+          create: (context) => CourseVideoDetailProvider(),
         ),
         // NOTE: provider lama
         Provider<CourseProvider>(

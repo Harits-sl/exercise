@@ -1,5 +1,6 @@
 import 'package:exercise/models/course_starter_model.dart';
 import 'package:exercise/models/search_model.dart';
+import 'package:exercise/pages/detail_course_page.dart';
 import 'package:exercise/pages/list_course_page.dart';
 import 'package:exercise/providers/search_provider.dart';
 import 'package:exercise/theme.dart';
@@ -18,11 +19,7 @@ class SearchResultItem extends StatelessWidget {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => ListCoursePage(
-              id: course.id,
-              title: course.namaKelas,
-              totalVideo: '12,590',
-            ),
+            builder: (context) => DetailCoursePage(id: course.id),
           ),
         );
       },

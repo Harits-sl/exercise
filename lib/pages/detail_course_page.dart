@@ -1,7 +1,11 @@
+import 'package:exercise/helpers/string_helper.dart';
+import 'package:exercise/pages/materi_video_page.dart';
+import 'package:exercise/providers/object_detail.dart';
 import 'package:exercise/providers/youtube_id_provider.dart';
 import 'package:exercise/utils/add_comma.dart';
 import 'package:exercise/widgets/video_course.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:exercise/providers/course_detail_provider.dart';
@@ -20,20 +24,8 @@ class DetailCoursePage extends StatelessWidget {
   Widget build(BuildContext context) {
     late String ids;
     var courseDetailProvider = Provider.of<CourseDetailProivder>(context);
+    var objectDetailProvider = Provider.of<ObjectDetailProvider>(context);
     var youtubeIdProvider = Provider.of<YoutubeIdProvider>(context);
-    List keyPoints = [
-      'Mendalami tools di Figma',
-      'Menggunakan Inspirasi Design',
-      'Mendesain tampilan Landing',
-      'Membuat Grid System'
-    ];
-
-    List designedFor = [
-      'Anda yang ingin belajar Figma',
-      'Anda yang ingin belajar layout',
-      'Anda yang ingin design CTA lebih baik',
-      'Anda yang ingin perdalam visual design'
-    ];
 
     Widget appBar() {
       return Padding(
@@ -69,7 +61,22 @@ class DetailCoursePage extends StatelessWidget {
       );
     }
 
-    Widget header(String namaKelas, String tagline, Map category) {
+    Widget trailerVideo(String trailerKelas) {
+      return Container(
+        padding: EdgeInsets.only(
+          left: defaultMargin,
+          right: defaultMargin,
+          top: defaultMargin,
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(24),
+          child: VideoCourse(youtubeId: trailerKelas),
+        ),
+      );
+    }
+
+    Widget header(String namaKelas, String tagline, Map category,
+        num totalDuration, num totalVideo) {
       return Container(
         padding: EdgeInsets.only(
           left: defaultMargin,
@@ -103,7 +110,7 @@ class DetailCoursePage extends StatelessWidget {
                   width: 4,
                 ),
                 Text(
-                  '41 Min • 10 Lesson',
+                  '$totalDuration Min • $totalVideo Lesson',
                   style: primaryTextStyle.copyWith(
                     fontWeight: medium,
                     fontSize: 12,
@@ -130,25 +137,6 @@ class DetailCoursePage extends StatelessWidget {
                 fontWeight: regular,
                 fontSize: 12,
               ),
-            ),
-          ],
-        ),
-      );
-    }
-
-    Widget trailerVideo(String trailerKelas) {
-      return Container(
-        padding: EdgeInsets.only(
-          left: defaultMargin,
-          right: defaultMargin,
-          top: defaultMargin,
-        ),
-        child: Stack(
-          alignment: AlignmentDirectional.center,
-          children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(24),
-              child: VideoCourse(youtubeId: trailerKelas),
             ),
           ],
         ),
@@ -263,14 +251,27 @@ class DetailCoursePage extends StatelessWidget {
             SizedBox(
               height: 12,
             ),
-            Text(
-              // 'Landing Page sangatlah penting perannya di dalam sebuah website toko online, perusahaan, atau lainnya. Karena ia adalah halaman pertama yang akan dikunjungi oleh pengguna baru atau lama.\n\nOleh karena ini di Workshop Figma kali ini kita akan belajar mendesain sebuah Landing Page untuk kebutuhan website Charity (mengumpulkan dana bantuan) yang dapat memberikan pesan baik untuk donatur.',
-              tentangKelas,
-              style: primaryTextStyle.copyWith(
-                fontWeight: regular,
-                fontSize: 12,
-              ),
+            Html(
+              data: tentangKelas,
+              style: {
+                'p': Style.fromTextStyle(
+                  primaryTextStyle.copyWith(
+                    fontWeight: regular,
+                    fontSize: 12,
+                    height: 1.7,
+                  ),
+                ),
+              },
             ),
+
+            // Text(
+            //   // 'Landin  g Page sangatlah penting perannya di dalam sebuah website toko online, perusahaan, atau lainnya. Karena ia adalah halaman pertama yang akan dikunjungi oleh pengguna baru atau lama.\n\nOleh karena ini di Workshop Figma kali ini kita akan belajar mendesain sebuah Landing Page untuk kebutuhan website Charity (mengumpulkan dana bantuan) yang dapat memberikan pesan baik untuk donatur.',
+            //   StringHelper.htmlToString(tentangKelas),
+            //   style: primaryTextStyle.copyWith(
+            //     fontWeight: regular,
+            //     fontSize: 12,
+            //   ),
+            // ),
           ],
         ),
       );
@@ -290,11 +291,14 @@ class DetailCoursePage extends StatelessWidget {
             SizedBox(
               width: 12,
             ),
-            Text(
-              name,
-              style: primaryTextStyle.copyWith(
-                fontWeight: regular,
-                fontSize: 12,
+            Expanded(
+              child: Text(
+                name,
+                style: primaryTextStyle.copyWith(
+                  fontWeight: regular,
+                  fontSize: 12,
+                ),
+                softWrap: true,
               ),
             ),
           ],
@@ -302,7 +306,7 @@ class DetailCoursePage extends StatelessWidget {
       );
     }
 
-    Widget sectionCourse(String title, bool isKeyPoints) {
+    Widget sectionCourse(String title, data) {
       return Container(
         padding: EdgeInsets.only(
           left: defaultMargin,
@@ -322,31 +326,18 @@ class DetailCoursePage extends StatelessWidget {
             SizedBox(
               height: 15,
             ),
-            isKeyPoints
-                ? ListView.builder(
-                    itemCount: keyPoints.length,
-                    shrinkWrap: true,
-                    physics: NeverScrollableScrollPhysics(),
-                    itemBuilder: (context, index) {
-                      return sectionItem(
-                        keyPoints[index],
-                        index,
-                        keyPoints.length - 1,
-                      );
-                    },
-                  )
-                : ListView.builder(
-                    itemCount: designedFor.length,
-                    shrinkWrap: true,
-                    physics: NeverScrollableScrollPhysics(),
-                    itemBuilder: (context, index) {
-                      return sectionItem(
-                        designedFor[index],
-                        index,
-                        designedFor.length - 1,
-                      );
-                    },
-                  ),
+            ListView.builder(
+              itemCount: data.length,
+              shrinkWrap: true,
+              physics: NeverScrollableScrollPhysics(),
+              itemBuilder: (context, index) {
+                return sectionItem(
+                  data[index],
+                  index,
+                  data.length - 1,
+                );
+              },
+            ),
           ],
         ),
       );
@@ -402,42 +393,126 @@ class DetailCoursePage extends StatelessWidget {
     }
 
     Widget content(data) {
-      print(data.trailerKelas);
+      num totalVideo = 0;
+      num totalDuration = 0;
+
+      var video = data.bagian
+          .map((bagian) => bagian)
+          .map((item) => totalVideo += item['materi_kelas'].length);
+
+      var duration = data.bagian
+          .map((bagian) => bagian)
+          .map((item) => item['materi_kelas'])
+          .map((item) {
+        for (var i in item) {
+          totalDuration += i['duration'];
+        }
+      });
+      print(video);
+      print(duration);
       youtubeIdProvider.youtubeId = data.trailerKelas;
-      print(youtubeIdProvider.youtubeId);
+
       return Column(
         children: [
           trailerVideo(data.trailerKelas),
-          header(data.namaKelas, data.tagline, data.category),
+          header(data.namaKelas, data.tagline, data.category, totalDuration,
+              totalVideo),
           secondHeader(data.joinedAmount, data.levelKelas),
           aboutCourse(data.tentangKelas),
           data.keyPoints.length == 0
               ? Container()
-              : sectionCourse('Key Points', true),
+              : sectionCourse('Key Points', data.keyPoints),
           data.personas.length == 0
               ? Container()
-              : sectionCourse('Designed For', false),
+              : sectionCourse('Designed For', data.personas),
           mentor(data.authors),
         ],
       );
     }
 
-    Widget floatingActionButton() {
+    Widget floatingActionButton(data) {
+      List listCourseId = [];
+      List listNamaMateri = [];
+      List listVideoMateri = [];
+      List listIsDone = [];
+      List listIsExpanded = [];
+
       return SizedBox(
         width: MediaQuery.of(context).size.width - (defaultMargin * 2),
         height: 50,
         child: FloatingActionButton.extended(
           onPressed: () {
-            // Navigator.push(
-            //   context,
-            //   MaterialPageRoute(
-            //     builder: (context) => ListCoursePage(
-            //       id: course.id,
-            //       title: course.namaKelas,
-            //       totalVideo: '12,590',
-            //     ),
-            //   ),
-            // );
+            objectDetailProvider.objectDetail = data;
+
+            void _addListId(value) {
+              listCourseId.add(value);
+            }
+
+            void _addListMateri(value) {
+              listNamaMateri.add(value);
+            }
+
+            void _addListVideo(value) {
+              listVideoMateri.add(value);
+            }
+
+            void _addListExpanded(value) {
+              listIsExpanded.add(value);
+            }
+
+            void _addListDone(value) {
+              listIsDone.add(value);
+            }
+
+            var id = data.bagian.map((item) => item).map((item) {
+              for (var i = 0; i < item['materi_kelas'].length; i++) {
+                _addListId(item['materi_kelas'][i]['id']);
+              }
+            });
+
+            var namaMateri = data.bagian.map((item) => item).map((item) {
+              for (var i = 0; i < item['materi_kelas'].length; i++) {
+                _addListMateri(item['materi_kelas'][i]['nama_materi']);
+              }
+            });
+
+            var videoMateri = data.bagian.map((item) => item).map((item) {
+              for (var i = 0; i < item['materi_kelas'].length; i++) {
+                _addListVideo(item['materi_kelas'][i]['video_materi']);
+              }
+            });
+
+            print(id);
+            print(namaMateri);
+            print(videoMateri);
+
+            for (var i = 0; i < data.bagian.length; i++) {
+              _addListExpanded(true);
+            }
+
+            for (var i = 0; i < listCourseId.length; i++) {
+              _addListDone(false);
+            }
+
+            objectDetailProvider.materi = {
+              'id': listCourseId.first,
+              'namaMateri': listNamaMateri.first,
+              'videoMateri': listVideoMateri.first,
+            };
+
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => MateriVideoPage(
+                  listId: listCourseId,
+                  listMateri: listNamaMateri,
+                  listVideo: listVideoMateri,
+                  listIsExpanded: listIsExpanded,
+                  listIsDone: listIsDone,
+                  materiBagian: data.bagian[0]['nama_bagian'],
+                ),
+              ),
+            );
           },
           elevation: 0,
           label: Text(
@@ -457,30 +532,29 @@ class DetailCoursePage extends StatelessWidget {
       );
     }
 
-    return Scaffold(
-      body: FutureBuilder(
+    Widget body() {
+      return FutureBuilder(
         future: courseDetailProvider.getDetail(id),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
-            var data = snapshot.data;
-            print(data);
             return OrientationBuilder(
               builder: (BuildContext context, Orientation orientation) {
-                // ketika deevice landscape
+                // ketika device landscape
                 // hanya mengembalikan youtube video player
                 if (orientation == Orientation.landscape) {
-                  return VideoCourse(youtubeId: data.trailerKelas);
+                  return VideoCourse(youtubeId: snapshot.data.trailerKelas);
                 } else {
                   return Scaffold(
                     body: SafeArea(
+                      bottom: false,
                       child: ListView(
                         children: [
                           appBar(),
-                          content(data),
+                          content(snapshot.data),
                         ],
                       ),
                     ),
-                    floatingActionButton: floatingActionButton(),
+                    floatingActionButton: floatingActionButton(snapshot.data),
                     floatingActionButtonLocation:
                         FloatingActionButtonLocation.centerFloat,
                   );
@@ -492,7 +566,11 @@ class DetailCoursePage extends StatelessWidget {
             child: CircularProgressIndicator(),
           );
         },
-      ),
+      );
+    }
+
+    return Scaffold(
+      body: body(),
     );
   }
 }

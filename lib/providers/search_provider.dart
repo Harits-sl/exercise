@@ -27,7 +27,6 @@ class SearchProvider with ChangeNotifier {
           Uri.parse('https://bwasandbox.com/api/course-search?keyword=$query'));
       if (apiResult.statusCode == 200) {
         List data = jsonDecode(apiResult.body);
-        print(data);
         List<SearchModel> listCourse =
             data.map((item) => SearchModel.fromJson(item)).toList();
         return listCourse;

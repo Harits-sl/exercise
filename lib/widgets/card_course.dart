@@ -19,7 +19,6 @@ class CardCourse extends StatelessWidget {
     return InkWell(
       borderRadius: BorderRadius.circular(12),
       onTap: () {
-        print(course.id);
         Navigator.push(
           context,
           MaterialPageRoute(
