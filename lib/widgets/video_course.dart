@@ -37,8 +37,7 @@ class _VideoCourseState extends State<VideoCourse> {
         disableDragSeek: false,
         loop: false,
         isLive: false,
-        forceHD: false,
-        enableCaption: true,
+        forceHD: true,
       ),
     )..addListener(listener);
     _idController = TextEditingController();

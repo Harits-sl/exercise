@@ -17,6 +17,18 @@ class _SearchPageState extends State<SearchPage> {
 
   @override
   Widget build(BuildContext context) {
+    List mostWanted = [
+      'Flutter',
+      'Laravel',
+      'Adobe Premiere',
+      'React',
+      'React Native',
+      'JavaScript',
+      'Figma',
+      'Adobe XD',
+      'UI Design',
+      'UX Design',
+    ];
     var searchProvider = Provider.of<SearchProvider>(context);
 
     Widget suggestionItem(text) {
@@ -112,23 +124,14 @@ class _SearchPageState extends State<SearchPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             SizedBox(
-              height: 28,
+              height: defaultMargin,
             ),
-            Text(
+            const Text(
               'Paling Dicari:',
             ),
             Wrap(
-              children: [
-                suggestionItem('Flutter'),
-                suggestionItem('Laravel'),
-                suggestionItem('Adobe Premiere'),
-                suggestionItem('React'),
-                suggestionItem('React Native'),
-                suggestionItem('Javascript'),
-                suggestionItem('Figma'),
-                suggestionItem('Adobe XD'),
-                suggestionItem('UI Design'),
-                suggestionItem('UX Design'),
+              children: <Widget>[
+                for (String item in mostWanted) suggestionItem(item)
               ],
             ),
           ],
@@ -173,7 +176,7 @@ class _SearchPageState extends State<SearchPage> {
                 ],
               );
             }
-            return Center(
+            return const Center(
               child: CircularProgressIndicator(),
             );
           },
@@ -182,7 +185,7 @@ class _SearchPageState extends State<SearchPage> {
     }
 
     Widget body() {
-      if (!searchProvider.isSearch) {
+      if (!searchProvider.isSearch || _queryTextController.text != '') {
         return result();
       }
       return suggestions();

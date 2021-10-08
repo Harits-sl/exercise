@@ -4,7 +4,6 @@ import 'package:exercise/providers/last_studied_provider.dart';
 import 'package:exercise/theme.dart';
 import 'package:exercise/widgets/card_course.dart';
 import 'package:exercise/widgets/category_item.dart';
-import 'package:exercise/widgets/custom_search_delegate.dart';
 import 'package:exercise/widgets/navbar_item.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -31,7 +30,7 @@ class HomePage extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Howdy, Bimo',
+                  '#SpiritOfLearning',
                   style: primaryTextStyle.copyWith(
                     fontWeight: semiBold,
                     fontSize: 16,
@@ -51,7 +50,7 @@ class HomePage extends StatelessWidget {
             ),
             CircleAvatar(
               backgroundImage: AssetImage(
-                'assets/profile.png',
+                'assets/logo_bwa.png',
               ),
             ),
           ],
@@ -97,11 +96,15 @@ class HomePage extends StatelessWidget {
               SizedBox(
                 width: 6,
               ),
-              Text(
-                'Cari kelas yang ingin kamu pelajari',
-                style: secondaryTextStyle.copyWith(
-                  fontWeight: regular,
-                  fontSize: 14,
+              Expanded(
+                child: Text(
+                  'Cari kelas yang ingin kamu pelajari',
+                  style: secondaryTextStyle.copyWith(
+                    fontWeight: regular,
+                    fontSize: 14,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
             ],
@@ -113,63 +116,66 @@ class HomePage extends StatelessWidget {
     Widget latestCourse() {
       return lastStudiedProvider.lastCourse == null
           ? Container()
-          : Container(
-              margin: EdgeInsets.only(
-                top: defaultMargin,
-                left: defaultMargin,
-                right: defaultMargin,
-              ),
-              padding: EdgeInsets.only(
-                top: 12,
-                bottom: 12,
-                left: 12,
-                right: 15,
-              ),
-              decoration: BoxDecoration(
-                color: whiteColor,
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Row(
-                children: [
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(12),
-                    child: Image.network(
-                      'https://bwasandbox.com${lastStudiedProvider.lastCourse['imageUrl']}',
-                      width: 60,
-                      height: 60,
-                      fit: BoxFit.cover,
+          : InkWell(
+              onTap: () {},
+              child: Container(
+                margin: EdgeInsets.only(
+                  top: defaultMargin,
+                  left: defaultMargin,
+                  right: defaultMargin,
+                ),
+                padding: EdgeInsets.only(
+                  top: 12,
+                  bottom: 12,
+                  left: 12,
+                  right: 15,
+                ),
+                decoration: BoxDecoration(
+                  color: whiteColor,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Row(
+                  children: [
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(12),
+                      child: Image.network(
+                        'https://bwasandbox.com${lastStudiedProvider.lastCourse['imageUrl']}',
+                        width: 60,
+                        height: 60,
+                        fit: BoxFit.cover,
+                      ),
                     ),
-                  ),
-                  SizedBox(
-                    width: 14,
-                  ),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Terakhir yang kamu pelajari',
-                          style: secondaryTextStyle.copyWith(
-                            fontWeight: regular,
-                            fontSize: 12,
-                          ),
-                        ),
-                        SizedBox(
-                          height: 2,
-                        ),
-                        Text(
-                          lastStudiedProvider.lastCourse['namaKelas'],
-                          style: primaryTextStyle.copyWith(
-                            fontWeight: semiBold,
-                            fontSize: 14,
-                          ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ],
+                    SizedBox(
+                      width: 14,
                     ),
-                  ),
-                ],
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Terakhir yang kamu pelajari',
+                            style: secondaryTextStyle.copyWith(
+                              fontWeight: regular,
+                              fontSize: 12,
+                            ),
+                          ),
+                          SizedBox(
+                            height: 2,
+                          ),
+                          Text(
+                            lastStudiedProvider.lastCourse['namaMateri'],
+                            style: primaryTextStyle.copyWith(
+                              fontWeight: semiBold,
+                              fontSize: 14,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               ),
             );
     }

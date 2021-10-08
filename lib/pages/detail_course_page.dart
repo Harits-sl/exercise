@@ -1,5 +1,6 @@
 import 'package:exercise/helpers/string_helper.dart';
 import 'package:exercise/pages/materi_video_page.dart';
+import 'package:exercise/providers/last_studied_provider.dart';
 import 'package:exercise/providers/object_detail.dart';
 import 'package:exercise/providers/youtube_id_provider.dart';
 import 'package:exercise/utils/add_comma.dart';
@@ -25,6 +26,7 @@ class DetailCoursePage extends StatelessWidget {
     late String ids;
     var courseDetailProvider = Provider.of<CourseDetailProivder>(context);
     var objectDetailProvider = Provider.of<ObjectDetailProvider>(context);
+    var lastStudiedProvider = Provider.of<LastStudiedProvider>(context);
     var youtubeIdProvider = Provider.of<YoutubeIdProvider>(context);
 
     Widget appBar() {
@@ -75,8 +77,12 @@ class DetailCoursePage extends StatelessWidget {
       );
     }
 
-    Widget header(String namaKelas, String tagline, Map category,
-        num totalDuration, num totalVideo) {
+    Widget header(
+        {required String namaKelas,
+        required String tagline,
+        required Map category,
+        required num totalDuration,
+        required num totalVideo}) {
       return Container(
         padding: EdgeInsets.only(
           left: defaultMargin,
@@ -144,87 +150,68 @@ class DetailCoursePage extends StatelessWidget {
     }
 
     Widget secondHeader(int joinedAmount, String levelKelas) {
+      Widget richText(
+          {bool isMember = false,
+          required String title,
+          required String subtitle}) {
+        return Row(
+          children: [
+            SizedBox(
+              width: defaultMargin,
+            ),
+            RichText(
+              textAlign: TextAlign.center,
+              text: TextSpan(
+                text: '$title\n',
+                style: primaryTextStyle.copyWith(
+                  fontWeight: regular,
+                  fontSize: 12,
+                  height: 1.7,
+                ),
+                children: [
+                  TextSpan(
+                    text: subtitle,
+                    style: primaryTextStyle.copyWith(
+                      fontWeight: semiBold,
+                      fontSize: 12,
+                    ),
+                  ),
+                  TextSpan(
+                    text: isMember ? ' enrolled' : '',
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(
+              width: defaultMargin,
+            ),
+            VerticalDivider(
+              color: Color(0xffCCD8F5),
+            ),
+          ],
+        );
+      }
+
       return Container(
-        margin: EdgeInsetsDirectional.only(
+        height: 96,
+        margin: EdgeInsets.only(
           top: defaultMargin,
         ),
-        padding: EdgeInsetsDirectional.all(
-          defaultMargin,
+        padding: EdgeInsets.symmetric(
+          vertical: defaultMargin,
         ),
         color: Color(0xffE8EFFF),
         child: IntrinsicHeight(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          child: ListView(
+            scrollDirection: Axis.horizontal,
             children: [
-              RichText(
-                textAlign: TextAlign.center,
-                text: TextSpan(
-                  text: 'Member\n',
-                  style: primaryTextStyle.copyWith(
-                    fontWeight: regular,
-                    fontSize: 12,
-                    height: 1.7,
-                  ),
-                  children: [
-                    TextSpan(
-                      text: '${addComma(joinedAmount.toString())}',
-                      style: primaryTextStyle.copyWith(
-                        fontWeight: semiBold,
-                        fontSize: 12,
-                      ),
-                    ),
-                    TextSpan(
-                      text: ' enrolled',
-                    ),
-                  ],
-                ),
-              ),
-              VerticalDivider(
-                color: Color(0xffCCD8F5),
-              ),
-              RichText(
-                textAlign: TextAlign.center,
-                text: TextSpan(
-                  text: 'Tingkatan\n',
-                  style: primaryTextStyle.copyWith(
-                    fontWeight: regular,
-                    fontSize: 12,
-                    height: 1.7,
-                  ),
-                  children: [
-                    TextSpan(
-                      text: levelKelas,
-                      style: primaryTextStyle.copyWith(
-                        fontWeight: semiBold,
-                        fontSize: 12,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              VerticalDivider(
-                color: Color(0xffCCD8F5),
-              ),
-              RichText(
-                textAlign: TextAlign.center,
-                text: TextSpan(
-                  text: 'Sertifikat\n',
-                  style: primaryTextStyle.copyWith(
-                    fontWeight: regular,
-                    fontSize: 12,
-                    height: 1.7,
-                  ),
-                  children: [
-                    TextSpan(
-                      text: '-',
-                      style: primaryTextStyle.copyWith(
-                        fontWeight: semiBold,
-                        fontSize: 12,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+              richText(
+                  isMember: true,
+                  title: 'Member',
+                  subtitle: '${addComma(joinedAmount.toString())}'),
+              richText(title: 'Tingkatan', subtitle: levelKelas),
+              richText(title: 'Sertifikat', subtitle: '-'),
+              richText(title: 'Konsultasi', subtitle: '-'),
             ],
           ),
         ),
@@ -248,12 +235,12 @@ class DetailCoursePage extends StatelessWidget {
                 fontSize: 14,
               ),
             ),
-            SizedBox(
-              height: 12,
-            ),
             Html(
               data: tentangKelas,
               style: {
+                'body': Style(
+                  margin: EdgeInsets.only(top: 12, bottom: 0),
+                ),
                 'p': Style.fromTextStyle(
                   primaryTextStyle.copyWith(
                     fontWeight: regular,
@@ -263,15 +250,6 @@ class DetailCoursePage extends StatelessWidget {
                 ),
               },
             ),
-
-            // Text(
-            //   // 'Landin  g Page sangatlah penting perannya di dalam sebuah website toko online, perusahaan, atau lainnya. Karena ia adalah halaman pertama yang akan dikunjungi oleh pengguna baru atau lama.\n\nOleh karena ini di Workshop Figma kali ini kita akan belajar mendesain sebuah Landing Page untuk kebutuhan website Charity (mengumpulkan dana bantuan) yang dapat memberikan pesan baik untuk donatur.',
-            //   StringHelper.htmlToString(tentangKelas),
-            //   style: primaryTextStyle.copyWith(
-            //     fontWeight: regular,
-            //     fontSize: 12,
-            //   ),
-            // ),
           ],
         ),
       );
@@ -415,8 +393,12 @@ class DetailCoursePage extends StatelessWidget {
       return Column(
         children: [
           trailerVideo(data.trailerKelas),
-          header(data.namaKelas, data.tagline, data.category, totalDuration,
-              totalVideo),
+          header(
+              namaKelas: data.namaKelas,
+              tagline: data.tagline,
+              category: data.category,
+              totalDuration: totalDuration,
+              totalVideo: totalVideo),
           secondHeader(data.joinedAmount, data.levelKelas),
           aboutCourse(data.tentangKelas),
           data.keyPoints.length == 0
@@ -443,6 +425,8 @@ class DetailCoursePage extends StatelessWidget {
         child: FloatingActionButton.extended(
           onPressed: () {
             objectDetailProvider.objectDetail = data;
+
+            print(objectDetailProvider.objectDetail);
 
             void _addListId(value) {
               listCourseId.add(value);
@@ -500,7 +484,13 @@ class DetailCoursePage extends StatelessWidget {
               'videoMateri': listVideoMateri.first,
             };
 
-            Navigator.push(
+            lastStudiedProvider.lastCourse = {
+              'id': listCourseId.first,
+              'namaMateri': listNamaMateri.first,
+              'imageUrl': data.thumbnailKelas,
+            };
+
+            Navigator.pushReplacement(
               context,
               MaterialPageRoute(
                 builder: (context) => MateriVideoPage(
