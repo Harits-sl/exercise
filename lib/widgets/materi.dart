@@ -3,17 +3,18 @@ import 'package:provider/provider.dart';
 
 import 'package:exercise/providers/last_studied_provider.dart';
 import 'package:exercise/providers/object_detail.dart';
-import 'package:exercise/providers/youtube_id_provider.dart';
 import 'package:exercise/theme.dart';
 
 class Materi extends StatefulWidget {
   final List listIsExpanded;
   final List listIsDone;
+  final ScrollController scrollController;
 
   const Materi({
     Key? key,
     required this.listIsExpanded,
     required this.listIsDone,
+    required this.scrollController,
   }) : super(key: key);
 
   @override
@@ -21,6 +22,8 @@ class Materi extends StatefulWidget {
 }
 
 class _MateriState extends State<Materi> {
+  String materiBagian = '';
+
   @override
   Widget build(BuildContext context) {
     var lastStudiedProvider = Provider.of<LastStudiedProvider>(context);
@@ -47,6 +50,10 @@ class _MateriState extends State<Materi> {
 
       return GestureDetector(
         onTap: () {
+          print(widget.scrollController);
+          widget.scrollController.animateTo(0,
+              duration: Duration(milliseconds: 500), curve: Curves.linear);
+
           lastStudiedProvider.lastCourse = {
             'id': materi['id'],
             'namaMateri': materi['nama_materi'],
@@ -55,10 +62,9 @@ class _MateriState extends State<Materi> {
           objectDetailProvider.materi = {
             'id': materi['id'],
             'namaMateri': materi['nama_materi'],
-            'videoMateri': materi['video_materi']
+            'videoMateri': materi['video_materi'],
+            'materiBagian': materiBagian,
           };
-
-          //  youtubeIdProvider.youtubeId = objectDetailProvider
         },
         child: Container(
           margin: EdgeInsets.only(bottom: 12),
@@ -120,6 +126,8 @@ class _MateriState extends State<Materi> {
                       (int indexExpansionCallback, bool isExpanded) {
                     setState(() {
                       widget.listIsExpanded[indexListViewBagian] = !isExpanded;
+                      materiBagian = objectDetailProvider.objectDetail
+                          .bagian[indexListViewBagian]['nama_bagian'];
                     });
                   },
                   children: [

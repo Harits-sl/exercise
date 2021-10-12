@@ -1,6 +1,5 @@
+import 'package:exercise/helpers/string_helper.dart';
 import 'package:exercise/pages/detail_course_page.dart';
-import 'package:exercise/pages/list_course_page.dart';
-import 'package:exercise/utils/add_comma.dart';
 import 'package:exercise/widgets/icon_star.dart';
 import 'package:flutter/material.dart';
 import 'package:exercise/models/course_starter_model.dart';
@@ -98,7 +97,7 @@ class CardCourse extends StatelessWidget {
                         width: 4,
                       ),
                       Text(
-                        '(${addComma(course.joinedAmount.toString())})',
+                        '(${StringHelper.addComma(course.joinedAmount.toString())})',
                         style: primaryTextStyle.copyWith(
                           fontWeight: medium,
                           fontSize: 10,

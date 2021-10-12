@@ -3,7 +3,6 @@ import 'package:exercise/pages/materi_video_page.dart';
 import 'package:exercise/providers/last_studied_provider.dart';
 import 'package:exercise/providers/object_detail.dart';
 import 'package:exercise/providers/youtube_id_provider.dart';
-import 'package:exercise/utils/add_comma.dart';
 import 'package:exercise/widgets/video_course.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
@@ -23,7 +22,6 @@ class DetailCoursePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    late String ids;
     var courseDetailProvider = Provider.of<CourseDetailProivder>(context);
     var objectDetailProvider = Provider.of<ObjectDetailProvider>(context);
     var lastStudiedProvider = Provider.of<LastStudiedProvider>(context);
@@ -208,7 +206,8 @@ class DetailCoursePage extends StatelessWidget {
               richText(
                   isMember: true,
                   title: 'Member',
-                  subtitle: '${addComma(joinedAmount.toString())}'),
+                  subtitle:
+                      '${StringHelper.addComma(joinedAmount.toString())}'),
               richText(title: 'Tingkatan', subtitle: levelKelas),
               richText(title: 'Sertifikat', subtitle: '-'),
               richText(title: 'Konsultasi', subtitle: '-'),

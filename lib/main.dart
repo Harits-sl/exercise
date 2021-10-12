@@ -1,5 +1,4 @@
 import 'package:exercise/pages/splash_screen.dart';
-import 'package:exercise/providers/course_provider.dart';
 import 'package:exercise/providers/course_starter_provider.dart';
 import 'package:exercise/providers/course_detail_provider.dart';
 import 'package:exercise/providers/course_video_detail_provider.dart';
@@ -28,24 +27,20 @@ class MyApp extends StatelessWidget {
         Provider<CourseDetailProivder>(
           create: (context) => CourseDetailProivder(),
         ),
+        Provider<YoutubeIdProvider>(
+          create: (context) => YoutubeIdProvider(),
+        ),
         ChangeNotifierProvider<SearchProvider>(
           create: (context) => SearchProvider(),
         ),
         ChangeNotifierProvider<LastStudiedProvider>(
           create: (context) => LastStudiedProvider(),
         ),
-        Provider<YoutubeIdProvider>(
-          create: (context) => YoutubeIdProvider(),
-        ),
         ChangeNotifierProvider<ObjectDetailProvider>(
           create: (context) => ObjectDetailProvider(),
         ),
         ChangeNotifierProvider<CourseVideoDetailProvider>(
           create: (context) => CourseVideoDetailProvider(),
-        ),
-        // NOTE: provider lama
-        Provider<CourseProvider>(
-          create: (context) => CourseProvider(),
         ),
       ],
       child: MaterialApp(

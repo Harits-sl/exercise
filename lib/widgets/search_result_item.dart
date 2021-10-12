@@ -1,15 +1,11 @@
-import 'package:exercise/models/course_starter_model.dart';
-import 'package:exercise/models/search_model.dart';
+import 'package:exercise/helpers/string_helper.dart';
 import 'package:exercise/pages/detail_course_page.dart';
-import 'package:exercise/pages/list_course_page.dart';
-import 'package:exercise/providers/search_provider.dart';
 import 'package:exercise/theme.dart';
-import 'package:exercise/utils/add_comma.dart';
 import 'package:exercise/widgets/icon_star.dart';
 import 'package:flutter/material.dart';
 
 class SearchResultItem extends StatelessWidget {
-  final SearchModel course;
+  final dynamic course;
   const SearchResultItem({Key? key, required this.course}) : super(key: key);
 
   @override
@@ -98,7 +94,7 @@ class SearchResultItem extends StatelessWidget {
                         width: 4,
                       ),
                       Text(
-                        '(${addComma(course.joinedAmount.toString())})',
+                        '(${StringHelper.addComma(course.joinedAmount.toString())})',
                         style: primaryTextStyle.copyWith(
                           fontWeight: medium,
                           fontSize: 10,

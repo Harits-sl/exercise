@@ -3,8 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
-import 'package:exercise/providers/youtube_id_provider.dart';
-
 class VideoCourse extends StatefulWidget {
   final String youtubeId;
 
@@ -75,7 +73,9 @@ class _VideoCourseState extends State<VideoCourse> {
     var objectDetailProvider = Provider.of<ObjectDetailProvider>(context);
 
     if (objectDetailProvider.materi['videoMateri'] != null) {
-      _controller.load(objectDetailProvider.materi['videoMateri']);
+      setState(() {
+        _controller.load(objectDetailProvider.materi['videoMateri']);
+      });
     }
 
     YoutubePlayer youtubePlayer = YoutubePlayer(

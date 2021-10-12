@@ -1,5 +1,7 @@
-import 'package:exercise/providers/last_studied_provider.dart';
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
 
 import 'package:exercise/pages/finish_course_page.dart';
@@ -7,7 +9,6 @@ import 'package:exercise/providers/object_detail.dart';
 import 'package:exercise/theme.dart';
 import 'package:exercise/widgets/card_tool.dart';
 import 'package:exercise/widgets/materi.dart';
-import 'package:exercise/widgets/video_course.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 class MateriVideoPage extends StatefulWidget {
@@ -36,17 +37,19 @@ class _MateriVideoPageState extends State<MateriVideoPage> {
   late YoutubePlayerController _controller;
   late TextEditingController _idController;
   late TextEditingController _seekToController;
+  late ScrollController _scrollController;
 
   late PlayerState _playerState;
   late YoutubeMetaData _videoMetaData;
   bool _isPlayerReady = false;
-  int i = 0;
 
   @override
   void initState() {
     super.initState();
+    _scrollController = ScrollController()..addListener(() {});
+
     _controller = YoutubePlayerController(
-      initialVideoId: widget.listVideo[i],
+      initialVideoId: widget.listVideo.first,
       flags: const YoutubePlayerFlags(
         mute: false,
         autoPlay: true,
@@ -90,22 +93,21 @@ class _MateriVideoPageState extends State<MateriVideoPage> {
   Widget build(BuildContext context) {
     var objectDetailProvider = Provider.of<ObjectDetailProvider>(context);
 
-    var searchIndexVideo = widget.listVideo.indexWhere(
-      (id) => id == objectDetailProvider.materi['videoMateri'],
-    );
-
-    if (objectDetailProvider.materi['videoMateri'] != null) {
-      setState(() {
-        i = searchIndexVideo;
-      });
-      _controller.load(objectDetailProvider.materi['videoMateri']);
-    }
-
     YoutubePlayer youtubePlayer = YoutubePlayer(
       controller: _controller,
       // aspect ratio ketika landscape
       aspectRatio: 19 / 9,
     );
+
+    // ketika halaman materi sudah paing atas tunggu sedetik
+    // lalu load video baru
+    if (_scrollController.hasClients) {
+      if (_scrollController.offset >= 0) {
+        Timer(Duration(milliseconds: 1000), () {
+          _controller.load(objectDetailProvider.materi['videoMateri']);
+        });
+      }
+    }
 
     Widget appBar() {
       return Container(
@@ -189,79 +191,15 @@ class _MateriVideoPageState extends State<MateriVideoPage> {
       );
     }
 
-    // Widget materiKelas() {
-    //   // variabel untuk isDone
-    //   int i = -1;
-    //   return Container(
-    //     padding: EdgeInsets.only(
-    //       left: defaultMargin,
-    //       right: defaultMargin,
-    //       top: defaultMargin,
-    //     ),
-    //     child: Flex(
-    //       direction: Axis.vertical,
-    //       children: [
-    //         ListView.builder(
-    //           itemCount: objectDetailProvider.objectDetail.bagian.length,
-    //           shrinkWrap: true,
-    //           physics: NeverScrollableScrollPhysics(),
-    //           itemBuilder: (contex, indexListViewBagian) {
-    //             return ExpansionPanelList(
-    //               elevation: 0,
-    //               expansionCallback:
-    //                   (int indexExpansionCallback, bool isExpanded) {
-    //                 setState(() {
-    //                   widget.listIsExpanded[indexListViewBagian] = !isExpanded;
-    //                 });
-    //               },
-    //               children: [
-    //                 ExpansionPanel(
-    //                   backgroundColor: backgroundColor,
-    //                   headerBuilder: (BuildContext context, bool isExpanded) {
-    //                     return ListTile(
-    //                       contentPadding: EdgeInsets.all(0),
-    //                       title: Text(
-    //                         objectDetailProvider.objectDetail
-    //                             .bagian[indexListViewBagian]['nama_bagian'],
-    //                         style: primaryTextStyle.copyWith(
-    //                           fontSize: 16,
-    //                           fontWeight: semiBold,
-    //                         ),
-    //                       ),
-    //                     );
-    //                   },
-    //                   body: ListView.builder(
-    //                     itemCount: objectDetailProvider.objectDetail
-    //                         .bagian[indexListViewBagian]['materi_kelas'].length,
-    //                     shrinkWrap: true,
-    //                     physics: NeverScrollableScrollPhysics(),
-    //                     itemBuilder: (context, indexListViewMateriKelas) {
-    //                       i += 1;
-    //                       return Materi(
-    //                         materi: objectDetailProvider
-    //                                 .objectDetail.bagian[indexListViewBagian]
-    //                             ['materi_kelas'][indexListViewMateriKelas],
-    //                         isDone: widget.listIsDone[i],
-    //                       );
-    //                     },
-    //                   ),
-    //                   isExpanded: widget.listIsExpanded[indexListViewBagian],
-    //                 ),
-    //               ],
-    //             );
-    //           },
-    //         ),
-    //       ],
-    //     ),
-    //   );
-    // }
-
     Widget floatingActionButton() {
       return SizedBox(
         width: MediaQuery.of(context).size.width - (defaultMargin * 2),
         height: 50,
         child: FloatingActionButton.extended(
           onPressed: () {
+            _scrollController.animateTo(0,
+                duration: Duration(milliseconds: 500), curve: Curves.linear);
+
             if (widget.listId.last == objectDetailProvider.materi['id']) {
               Navigator.pushReplacement(
                 context,
@@ -367,29 +305,37 @@ class _MateriVideoPageState extends State<MateriVideoPage> {
             left: false,
             right: false,
             bottom: false,
-            child: ListView(
+            child: Column(
               children: [
-                appBar(),
-                header(),
-                Container(
-                  padding: EdgeInsets.only(
-                    left: defaultMargin,
-                    right: defaultMargin,
-                    top: 12,
-                  ),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(24),
-                    child: AspectRatio(
-                      aspectRatio: 16 / 9,
-                      child: player,
-                    ),
+                Expanded(
+                  child: ListView(
+                    controller: _scrollController,
+                    children: [
+                      appBar(),
+                      header(),
+                      Container(
+                        padding: EdgeInsets.only(
+                          left: defaultMargin,
+                          right: defaultMargin,
+                          top: 12,
+                        ),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(24),
+                          child: AspectRatio(
+                            aspectRatio: 16 / 9,
+                            child: player,
+                          ),
+                        ),
+                      ),
+                      Materi(
+                        listIsExpanded: widget.listIsExpanded,
+                        listIsDone: widget.listIsDone,
+                        scrollController: _scrollController,
+                      ),
+                      toolKelas(),
+                    ],
                   ),
                 ),
-                Materi(
-                  listIsExpanded: widget.listIsExpanded,
-                  listIsDone: widget.listIsDone,
-                ),
-                toolKelas(),
               ],
             ),
           ),
@@ -399,36 +345,5 @@ class _MateriVideoPageState extends State<MateriVideoPage> {
         );
       },
     );
-
-    //   return OrientationBuilder(
-    //     builder: (BuildContext context, Orientation orientation) {
-    //       // ketika device landscape
-    //       // hanya mengembalikan youtube video player
-    //       if (orientation == Orientation.landscape) {
-    //         return videoPlayer(objectDetailProvider.objectDetail.bagian[0]
-    //             ['materi_kelas'][0]['video_materi']);
-    //       } else {
-    //         return Scaffold(
-    //           backgroundColor: backgroundColor,
-    //           body: SafeArea(
-    //             child: ListView(
-    //               children: [
-    //                 appBar(),
-    //                 header(),
-    //                 videoPlayer(objectDetailProvider.objectDetail.bagian[0]
-    //                     ['materi_kelas'][0]['video_materi']),
-    //                 materiKelas(),
-    //                 toolKelas(),
-    //               ],
-    //             ),
-    //           ),
-    //           floatingActionButton: floatingActionButton(),
-    //           floatingActionButtonLocation:
-    //               FloatingActionButtonLocation.centerFloat,
-    //         );
-    //       }
-    //     },
-    //   );
-    // }
   }
 }

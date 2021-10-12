@@ -1,12 +1,18 @@
 import 'package:exercise/providers/course_starter_provider.dart';
-import 'package:exercise/providers/search_provider.dart';
-import 'package:exercise/theme.dart';
-import 'package:exercise/widgets/search_result_item.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import 'package:exercise/providers/search_provider.dart';
+import 'package:exercise/theme.dart';
+import 'package:exercise/widgets/search_result_item.dart';
+
 class SearchPage extends StatefulWidget {
-  const SearchPage({Key? key}) : super(key: key);
+  final bool isSearch;
+
+  const SearchPage({
+    Key? key,
+    required this.isSearch,
+  }) : super(key: key);
 
   @override
   _SearchPageState createState() => _SearchPageState();
@@ -30,6 +36,7 @@ class _SearchPageState extends State<SearchPage> {
       'UX Design',
     ];
     var searchProvider = Provider.of<SearchProvider>(context);
+    var courseStarterProvider = Provider.of<CourseStarterProvider>(context);
 
     Widget suggestionItem(text) {
       return GestureDetector(
@@ -185,7 +192,9 @@ class _SearchPageState extends State<SearchPage> {
     }
 
     Widget body() {
-      if (!searchProvider.isSearch || _queryTextController.text != '') {
+      if (!widget.isSearch ||
+          !searchProvider.isSearch ||
+          _queryTextController.text != '') {
         return result();
       }
       return suggestions();
