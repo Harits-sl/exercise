@@ -42,13 +42,13 @@ class CardTool extends StatelessWidget {
               SizedBox(
                 height: 2,
               ),
-              Text(
-                'Tools Design',
-                style: secondaryTextStyle.copyWith(
-                  fontWeight: medium,
-                  fontSize: 10,
-                ),
-              ),
+              // Text(
+              //   'Tools Design',
+              //   style: secondaryTextStyle.copyWith(
+              //     fontWeight: medium,
+              //     fontSize: 10,
+              //   ),
+              // ),
             ],
           ),
         ],

@@ -1,8 +1,11 @@
+import 'dart:developer';
+
 import 'package:exercise/helpers/string_helper.dart';
 import 'package:exercise/pages/materi_video_page.dart';
 import 'package:exercise/providers/last_studied_provider.dart';
 import 'package:exercise/providers/object_detail.dart';
 import 'package:exercise/providers/youtube_id_provider.dart';
+import 'package:exercise/widgets/icon_star.dart';
 import 'package:exercise/widgets/video_course.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
@@ -75,12 +78,24 @@ class DetailCoursePage extends StatelessWidget {
       );
     }
 
-    Widget header(
-        {required String namaKelas,
-        required String tagline,
-        required Map category,
-        required num totalDuration,
-        required num totalVideo}) {
+    Widget header({
+      required String namaKelas,
+      required String tagline,
+      required Map category,
+      required num totalDuration,
+      required num totalVideo,
+      required int joinedAmount,
+    }) {
+      Widget text(String input) {
+        return Text(
+          '$input',
+          style: primaryTextStyle.copyWith(
+            fontWeight: medium,
+            fontSize: 12,
+          ),
+        );
+      }
+
       return Container(
         padding: EdgeInsets.only(
           left: defaultMargin,
@@ -113,12 +128,37 @@ class DetailCoursePage extends StatelessWidget {
                 SizedBox(
                   width: 4,
                 ),
-                Text(
-                  '$totalDuration Min • $totalVideo Lesson',
-                  style: primaryTextStyle.copyWith(
-                    fontWeight: medium,
-                    fontSize: 12,
-                  ),
+                text('$totalDuration Min'),
+                SizedBox(
+                  width: 6,
+                ),
+                text('•'),
+                SizedBox(
+                  width: 6,
+                ),
+                text('$totalVideo Lesson'),
+                SizedBox(
+                  width: 6,
+                ),
+                text('•'),
+                SizedBox(
+                  width: 6,
+                ),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    IconStar(),
+                    SizedBox(
+                      width: 4,
+                    ),
+                    Text(
+                      '(${StringHelper.addComma(joinedAmount.toString())})',
+                      style: primaryTextStyle.copyWith(
+                        fontWeight: medium,
+                        fontSize: 10,
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),
@@ -393,11 +433,13 @@ class DetailCoursePage extends StatelessWidget {
         children: [
           trailerVideo(data.trailerKelas),
           header(
-              namaKelas: data.namaKelas,
-              tagline: data.tagline,
-              category: data.category,
-              totalDuration: totalDuration,
-              totalVideo: totalVideo),
+            namaKelas: data.namaKelas,
+            tagline: data.tagline,
+            category: data.category,
+            totalDuration: totalDuration,
+            totalVideo: totalVideo,
+            joinedAmount: data.joinedAmount,
+          ),
           secondHeader(data.joinedAmount, data.levelKelas),
           aboutCourse(data.tentangKelas),
           data.keyPoints.length == 0
@@ -417,6 +459,7 @@ class DetailCoursePage extends StatelessWidget {
       List listVideoMateri = [];
       List listIsDone = [];
       List listIsExpanded = [];
+      List l = [];
 
       return SizedBox(
         width: MediaQuery.of(context).size.width - (defaultMargin * 2),
@@ -437,6 +480,10 @@ class DetailCoursePage extends StatelessWidget {
 
             void _addListVideo(value) {
               listVideoMateri.add(value);
+            }
+
+            void b(value) {
+              l.add(value);
             }
 
             void _addListExpanded(value) {
@@ -465,6 +512,12 @@ class DetailCoursePage extends StatelessWidget {
               }
             });
 
+            var a = data.bagian.map((item) => item).map((item) {
+              for (var i = 0; i < item['materi_kelas'].length; i++) {
+                b(item['materi_kelas'][i]);
+              }
+            });
+            print(a);
             print(id);
             print(namaMateri);
             print(videoMateri);
@@ -479,14 +532,23 @@ class DetailCoursePage extends StatelessWidget {
 
             objectDetailProvider.materi = {
               'id': listCourseId.first,
+              'idMateriBagian': data.bagian[0]['materi_kelas'][0]
+                  ['id_bagian_kelas'],
               'namaMateri': listNamaMateri.first,
               'videoMateri': listVideoMateri.first,
             };
 
             lastStudiedProvider.lastCourse = {
-              'id': listCourseId.first,
               'namaMateri': listNamaMateri.first,
+              'listId': listCourseId,
+              'listMateri': listNamaMateri,
+              'listVideo': listVideoMateri,
+              'listIsExpanded': listIsExpanded,
+              'listIsDone': listIsDone,
+              'materiBagian': l,
               'imageUrl': data.thumbnailKelas,
+              'index': 0,
+              'materi': data.bagian,
             };
 
             Navigator.pushReplacement(
@@ -498,7 +560,9 @@ class DetailCoursePage extends StatelessWidget {
                   listVideo: listVideoMateri,
                   listIsExpanded: listIsExpanded,
                   listIsDone: listIsDone,
-                  materiBagian: data.bagian[0]['nama_bagian'],
+                  materiBagian: l,
+                  materi: data.bagian,
+                  index: 0,
                 ),
               ),
             );

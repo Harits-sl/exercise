@@ -22,12 +22,15 @@ class Materi extends StatefulWidget {
 }
 
 class _MateriState extends State<Materi> {
-  String materiBagian = '';
-
   @override
   Widget build(BuildContext context) {
     var lastStudiedProvider = Provider.of<LastStudiedProvider>(context);
     var objectDetailProvider = Provider.of<ObjectDetailProvider>(context);
+
+    var lastCourse = lastStudiedProvider.lastCourse;
+    var searchIndexId = lastCourse['listId'].indexWhere(
+      (id) => id == objectDetailProvider.materi['id'],
+    );
 
     Widget _materi(materi, isDone) {
       dynamic theme = objectDetailProvider.materi['id'] == materi['id']
@@ -50,24 +53,38 @@ class _MateriState extends State<Materi> {
 
       return GestureDetector(
         onTap: () {
-          print(widget.scrollController);
-          widget.scrollController.animateTo(0,
-              duration: Duration(milliseconds: 500), curve: Curves.linear);
+          widget.scrollController.animateTo(
+            0,
+            duration: Duration(milliseconds: 200),
+            curve: Curves.linear,
+          );
 
-          lastStudiedProvider.lastCourse = {
-            'id': materi['id'],
-            'namaMateri': materi['nama_materi'],
-            'imageUrl': objectDetailProvider.objectDetail.thumbnailKelas,
-          };
           objectDetailProvider.materi = {
             'id': materi['id'],
             'namaMateri': materi['nama_materi'],
             'videoMateri': materi['video_materi'],
-            'materiBagian': materiBagian,
+            'idMateriBagian': materi['id_bagian_kelas'],
+          };
+
+          lastStudiedProvider.lastCourse = {
+            'namaMateri': materi['nama_materi'],
+            'listId': lastCourse['listId'],
+            'listMateri': lastCourse['listMateri'],
+            'listVideo': lastCourse['listVideo'],
+            'listIsExpanded': lastCourse['listIsExpanded'],
+            'listIsDone': lastCourse['listIsDone'],
+            'materiBagian': lastCourse['materiBagian'],
+            'imageUrl': objectDetailProvider.objectDetail.thumbnailKelas,
+            'index': searchIndexId, //last id yang dipelajari
+            'materi': lastStudiedProvider.lastCourse['materi'],
           };
         },
         child: Container(
-          margin: EdgeInsets.only(bottom: 12),
+          margin: EdgeInsets.only(
+            bottom: 12,
+            left: defaultMargin,
+            right: defaultMargin,
+          ),
           child: ListTile(
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.all(
@@ -105,11 +122,9 @@ class _MateriState extends State<Materi> {
     }
 
     Container newMethod() {
-      int i = -1;
+      int i = -1; // index untuk listIsDone
       return Container(
         padding: EdgeInsets.only(
-          left: defaultMargin,
-          right: defaultMargin,
           top: defaultMargin,
         ),
         child: Flex(
@@ -126,8 +141,6 @@ class _MateriState extends State<Materi> {
                       (int indexExpansionCallback, bool isExpanded) {
                     setState(() {
                       widget.listIsExpanded[indexListViewBagian] = !isExpanded;
-                      materiBagian = objectDetailProvider.objectDetail
-                          .bagian[indexListViewBagian]['nama_bagian'];
                     });
                   },
                   children: [
@@ -135,7 +148,8 @@ class _MateriState extends State<Materi> {
                       backgroundColor: backgroundColor,
                       headerBuilder: (BuildContext context, bool isExpanded) {
                         return ListTile(
-                          contentPadding: EdgeInsets.all(0),
+                          contentPadding:
+                              EdgeInsets.symmetric(horizontal: defaultMargin),
                           title: Text(
                             objectDetailProvider.objectDetail
                                 .bagian[indexListViewBagian]['nama_bagian'],

@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:exercise/providers/last_studied_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
@@ -17,7 +18,9 @@ class MateriVideoPage extends StatefulWidget {
   final List listVideo;
   final List listIsExpanded;
   final List listIsDone;
-  final String materiBagian;
+  final List materiBagian;
+  final List materi;
+  final int index;
 
   const MateriVideoPage({
     Key? key,
@@ -27,6 +30,8 @@ class MateriVideoPage extends StatefulWidget {
     required this.listIsExpanded,
     required this.listIsDone,
     required this.materiBagian,
+    required this.materi,
+    required this.index,
   }) : super(key: key);
 
   @override
@@ -38,6 +43,7 @@ class _MateriVideoPageState extends State<MateriVideoPage> {
   late TextEditingController _idController;
   late TextEditingController _seekToController;
   late ScrollController _scrollController;
+  double currentScroll = 0;
 
   late PlayerState _playerState;
   late YoutubeMetaData _videoMetaData;
@@ -46,10 +52,11 @@ class _MateriVideoPageState extends State<MateriVideoPage> {
   @override
   void initState() {
     super.initState();
+
     _scrollController = ScrollController()..addListener(() {});
 
     _controller = YoutubePlayerController(
-      initialVideoId: widget.listVideo.first,
+      initialVideoId: widget.listVideo[widget.index],
       flags: const YoutubePlayerFlags(
         mute: false,
         autoPlay: true,
@@ -92,6 +99,7 @@ class _MateriVideoPageState extends State<MateriVideoPage> {
   @override
   Widget build(BuildContext context) {
     var objectDetailProvider = Provider.of<ObjectDetailProvider>(context);
+    var lastStudiedProvider = Provider.of<LastStudiedProvider>(context);
 
     YoutubePlayer youtubePlayer = YoutubePlayer(
       controller: _controller,
@@ -99,14 +107,46 @@ class _MateriVideoPageState extends State<MateriVideoPage> {
       aspectRatio: 19 / 9,
     );
 
-    // ketika halaman materi sudah paing atas tunggu sedetik
-    // lalu load video baru
+    // ketika button next materi atau materi di klik
+    // jika position dibawah, setstate selama 0.5 detik
+    // jika posisition paling atas, tunggu 1 detik lalu
+    // load video baru
     if (_scrollController.hasClients) {
-      if (_scrollController.offset >= 0) {
-        Timer(Duration(milliseconds: 1000), () {
-          _controller.load(objectDetailProvider.materi['videoMateri']);
-        });
+      void scroll(double position) {
+        if (position > 0) {
+          setState(() {
+            currentScroll = _scrollController.offset;
+          });
+          Timer(Duration(milliseconds: 500), () {
+            scroll(currentScroll);
+          });
+        }
+        if (position == 0) {
+          Timer(Duration(milliseconds: 1000), () {
+            _controller.load(objectDetailProvider.materi['videoMateri']);
+          });
+          return;
+        }
       }
+
+      scroll(_scrollController.offset);
+    }
+
+    // untuk materi bagian
+    // list idMateriBagian dari data id_bagian_kelas
+    // [1,1,2,2,3,3,3,4]
+    List idMateriBagian = [];
+    for (var item in widget.materiBagian) {
+      idMateriBagian.add(item['id_bagian_kelas']);
+    }
+    // hanya menampilkan id yang berbeda [1,2,3,4]
+    List idUnikMateriBagian = idMateriBagian.toSet().toList();
+
+    int searchIndexIdBagianMateri() {
+      int index = idUnikMateriBagian.indexWhere(
+        (id) => id == objectDetailProvider.materi['idMateriBagian'],
+      );
+      return index;
     }
 
     Widget appBar() {
@@ -180,7 +220,7 @@ class _MateriVideoPageState extends State<MateriVideoPage> {
               height: 2,
             ),
             Text(
-              'Materi bagian: ${widget.materiBagian}',
+              'Materi bagian: ${widget.materi[searchIndexIdBagianMateri()]['nama_bagian']}',
               style: primaryTextStyle.copyWith(
                 fontSize: 12,
                 fontWeight: regular,
@@ -197,8 +237,11 @@ class _MateriVideoPageState extends State<MateriVideoPage> {
         height: 50,
         child: FloatingActionButton.extended(
           onPressed: () {
-            _scrollController.animateTo(0,
-                duration: Duration(milliseconds: 500), curve: Curves.linear);
+            _scrollController.animateTo(
+              0,
+              duration: Duration(milliseconds: 200),
+              curve: Curves.linear,
+            );
 
             if (widget.listId.last == objectDetailProvider.materi['id']) {
               Navigator.pushReplacement(
@@ -213,10 +256,27 @@ class _MateriVideoPageState extends State<MateriVideoPage> {
               (id) => id == objectDetailProvider.materi['id'],
             );
 
+            print(widget.materiBagian[searchIndexId]);
+
+            lastStudiedProvider.lastCourse = {
+              'namaMateri': widget.listMateri[searchIndexId + 1],
+              'listId': widget.listId,
+              'listMateri': widget.listMateri,
+              'listVideo': widget.listVideo,
+              'listIsExpanded': widget.listIsExpanded,
+              'listIsDone': widget.listIsDone,
+              'materiBagian': widget.materiBagian,
+              'imageUrl': objectDetailProvider.objectDetail.thumbnailKelas,
+              'index': searchIndexId + 1, //last id yang dipelajari
+              'materi': widget.materi,
+            };
             objectDetailProvider.materi = {
               'id': widget.listId[searchIndexId + 1],
               'namaMateri': widget.listMateri[searchIndexId + 1],
               'videoMateri': widget.listVideo[searchIndexId + 1],
+              'listIdMateriBagian': idMateriBagian,
+              'idMateriBagian': widget.materiBagian[searchIndexId + 1]
+                  ['id_bagian_kelas'],
             };
 
             setState(() {
@@ -305,37 +365,31 @@ class _MateriVideoPageState extends State<MateriVideoPage> {
             left: false,
             right: false,
             bottom: false,
-            child: Column(
+            child: ListView(
+              controller: _scrollController,
               children: [
-                Expanded(
-                  child: ListView(
-                    controller: _scrollController,
-                    children: [
-                      appBar(),
-                      header(),
-                      Container(
-                        padding: EdgeInsets.only(
-                          left: defaultMargin,
-                          right: defaultMargin,
-                          top: 12,
-                        ),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(24),
-                          child: AspectRatio(
-                            aspectRatio: 16 / 9,
-                            child: player,
-                          ),
-                        ),
-                      ),
-                      Materi(
-                        listIsExpanded: widget.listIsExpanded,
-                        listIsDone: widget.listIsDone,
-                        scrollController: _scrollController,
-                      ),
-                      toolKelas(),
-                    ],
+                appBar(),
+                header(),
+                Container(
+                  padding: EdgeInsets.only(
+                    left: defaultMargin,
+                    right: defaultMargin,
+                    top: 12,
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(24),
+                    child: AspectRatio(
+                      aspectRatio: 16 / 9,
+                      child: player,
+                    ),
                   ),
                 ),
+                Materi(
+                  listIsExpanded: widget.listIsExpanded,
+                  listIsDone: widget.listIsDone,
+                  scrollController: _scrollController,
+                ),
+                toolKelas(),
               ],
             ),
           ),

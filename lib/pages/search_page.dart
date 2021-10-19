@@ -7,11 +7,10 @@ import 'package:exercise/theme.dart';
 import 'package:exercise/widgets/search_result_item.dart';
 
 class SearchPage extends StatefulWidget {
-  final bool isSearch;
-
+  final bool isNewFreeCourse;
   const SearchPage({
     Key? key,
-    required this.isSearch,
+    this.isNewFreeCourse = false,
   }) : super(key: key);
 
   @override
@@ -23,7 +22,7 @@ class _SearchPageState extends State<SearchPage> {
 
   @override
   Widget build(BuildContext context) {
-    List mostWanted = [
+    List mostSearch = [
       'Flutter',
       'Laravel',
       'Adobe Premiere',
@@ -38,10 +37,17 @@ class _SearchPageState extends State<SearchPage> {
     var searchProvider = Provider.of<SearchProvider>(context);
     var courseStarterProvider = Provider.of<CourseStarterProvider>(context);
 
+    var fetchCourse = widget.isNewFreeCourse
+        ? courseStarterProvider.getAllFreeCourse()
+        : courseStarterProvider.getAllTopFeatureCourse();
+
+    var titleResult =
+        widget.isNewFreeCourse ? 'New Free Course' : 'Top Featured';
+
     Widget suggestionItem(text) {
       return GestureDetector(
         onTap: () {
-          searchProvider.isSearch = false;
+          searchProvider.isSearch = true;
           searchProvider.query = text;
           _queryTextController.text = text;
         },
@@ -80,7 +86,6 @@ class _SearchPageState extends State<SearchPage> {
             color: Colors.black,
           ),
           onPressed: () {
-            searchProvider.isSearch = true;
             Navigator.pop(context);
           },
         ),
@@ -90,10 +95,10 @@ class _SearchPageState extends State<SearchPage> {
           child: TextField(
             controller: _queryTextController,
             onSubmitted: (String _) {
+              searchProvider.isSearch = true;
               searchProvider.query = _queryTextController.text;
-              searchProvider.isSearch = false;
             },
-            autofocus: true,
+            autofocus: searchProvider.isSearch,
             style: primaryTextStyle.copyWith(
               fontWeight: medium,
               fontSize: 12,
@@ -138,7 +143,7 @@ class _SearchPageState extends State<SearchPage> {
             ),
             Wrap(
               children: <Widget>[
-                for (String item in mostWanted) suggestionItem(item)
+                for (String item in mostSearch) suggestionItem(item)
               ],
             ),
           ],
@@ -154,7 +159,9 @@ class _SearchPageState extends State<SearchPage> {
           right: defaultMargin,
         ),
         child: FutureBuilder<dynamic>(
-          future: searchProvider.searchCourse(),
+          future: searchProvider.isSearch
+              ? searchProvider.searchCourse()
+              : fetchCourse,
           builder: (context, snapshot) {
             if (snapshot.hasData) {
               var data = snapshot.data;
@@ -162,7 +169,9 @@ class _SearchPageState extends State<SearchPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Result (${data.length.toString()})',
+                    searchProvider.isSearch
+                        ? 'Result (${data.length.toString()})'
+                        : '$titleResult (${data.length.toString()})',
                     style: primaryTextStyle.copyWith(
                       fontWeight: semiBold,
                       fontSize: 14,
@@ -192,9 +201,7 @@ class _SearchPageState extends State<SearchPage> {
     }
 
     Widget body() {
-      if (!widget.isSearch ||
-          !searchProvider.isSearch ||
-          _queryTextController.text != '') {
+      if (!searchProvider.isSearch || _queryTextController.text != '') {
         return result();
       }
       return suggestions();

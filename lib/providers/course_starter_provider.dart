@@ -5,10 +5,10 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 
 class CourseStarterProvider with ChangeNotifier {
-  Future<dynamic> getAllFreeCourse() async {
+  Future<dynamic> getAllFreeCourse({String take = ''}) async {
     try {
-      var apiResult =
-          await http.get(Uri.parse('https://bwasandbox.com/api/course-free'));
+      var apiResult = await http
+          .get(Uri.parse('https://bwasandbox.com/api/course-free?take=$take'));
 
       if (apiResult.statusCode == 200) {
         List data = jsonDecode(apiResult.body);
@@ -22,10 +22,10 @@ class CourseStarterProvider with ChangeNotifier {
     }
   }
 
-  Future<dynamic> getAllTopFeatureCourse() async {
+  Future<dynamic> getAllTopFeatureCourse({String take = ''}) async {
     try {
-      var apiResult =
-          await http.get(Uri.parse('https://bwasandbox.com/api/course-top'));
+      var apiResult = await http
+          .get(Uri.parse('https://bwasandbox.com/api/course-top?take=$take'));
 
       if (apiResult.statusCode == 200) {
         List data = jsonDecode(apiResult.body);

@@ -41,16 +41,16 @@ class CardMentor extends StatelessWidget {
               fontSize: 14,
             ),
           ),
-          SizedBox(
-            height: 4,
-          ),
-          Text(
-            'Product Designer',
-            style: secondaryTextStyle.copyWith(
-              fontWeight: regular,
-              fontSize: 12,
-            ),
-          ),
+          // SizedBox(
+          //   height: 4,
+          // ),
+          // Text(
+          //   'Product Designer',
+          //   style: secondaryTextStyle.copyWith(
+          //     fontWeight: regular,
+          //     fontSize: 12,
+          //   ),
+          // ),
           SizedBox(
             height: 4,
           ),
