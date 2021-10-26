@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:exercise/pages/splash_screen.dart';
 import 'package:exercise/providers/course_starter_provider.dart';
 import 'package:exercise/providers/course_detail_provider.dart';
@@ -8,10 +10,22 @@ import 'package:exercise/providers/search_provider.dart';
 import 'package:exercise/providers/youtube_id_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 
-void main() {
-  Provider.debugCheckInvalidValueType = null;
-  runApp(MyApp());
+void main() async {
+  runZonedGuarded(() async {
+    WidgetsFlutterBinding.ensureInitialized();
+
+    await Firebase.initializeApp();
+    FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
+    await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(true);
+
+    Provider.debugCheckInvalidValueType = null;
+    runApp(const MyApp());
+  }, (error, stackTrace) {
+    FirebaseCrashlytics.instance.recordError(error, stackTrace);
+  });
 }
 
 class MyApp extends StatelessWidget {
