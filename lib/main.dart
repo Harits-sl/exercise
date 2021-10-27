@@ -1,17 +1,23 @@
 import 'dart:async';
-
-import 'package:exercise/pages/splash_screen.dart';
-import 'package:exercise/providers/course_starter_provider.dart';
-import 'package:exercise/providers/course_detail_provider.dart';
-import 'package:exercise/providers/course_video_detail_provider.dart';
-import 'package:exercise/providers/last_studied_provider.dart';
-import 'package:exercise/providers/object_detail.dart';
-import 'package:exercise/providers/search_provider.dart';
-import 'package:exercise/providers/youtube_id_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+
+// api
+import './network/api/course_starter_provider.dart';
+import './network/api/course_detail_provider.dart';
+import './network/api/course_video_detail_provider.dart';
+import './network/api/course_search_provider.dart';
+
+// provider
+import './providers/search_provider.dart';
+import './providers/last_studied_provider.dart';
+import './providers/object_detail.dart';
+import './providers/youtube_id_provider.dart';
+
+// page
+import './ui/pages/splash_page.dart';
 
 void main() async {
   runZonedGuarded(() async {
@@ -35,13 +41,22 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        Provider<CourseStarterProvider>(
+        // api
+        ChangeNotifierProvider<CourseStarterProvider>(
           create: (context) => CourseStarterProvider(),
         ),
-        Provider<CourseDetailProivder>(
+        ChangeNotifierProvider<CourseDetailProivder>(
           create: (context) => CourseDetailProivder(),
         ),
-        Provider<YoutubeIdProvider>(
+        ChangeNotifierProvider<CourseSearchProvider>(
+          create: (context) => CourseSearchProvider(),
+        ),
+        ChangeNotifierProvider<CourseVideoDetailProvider>(
+          create: (context) => CourseVideoDetailProvider(),
+        ),
+
+        // provider
+        ChangeNotifierProvider<YoutubeIdProvider>(
           create: (context) => YoutubeIdProvider(),
         ),
         ChangeNotifierProvider<SearchProvider>(
@@ -52,9 +67,6 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProvider<ObjectDetailProvider>(
           create: (context) => ObjectDetailProvider(),
-        ),
-        ChangeNotifierProvider<CourseVideoDetailProvider>(
-          create: (context) => CourseVideoDetailProvider(),
         ),
       ],
       child: MaterialApp(

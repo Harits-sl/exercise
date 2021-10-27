@@ -1,4 +1,3 @@
-import 'package:exercise/models/course_detail_model.dart';
 import 'package:flutter/material.dart';
 
 class LastStudiedProvider with ChangeNotifier {
