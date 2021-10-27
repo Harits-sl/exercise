@@ -18,10 +18,14 @@ class CardCourse extends StatelessWidget {
     return InkWell(
       borderRadius: BorderRadius.circular(12),
       onTap: () {
+        print(course);
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => DetailCoursePage(id: course.id),
+            builder: (context) => DetailCoursePage(
+              id: course.id,
+              trailerKelas: course.trailerKelas,
+            ),
           ),
         );
       },

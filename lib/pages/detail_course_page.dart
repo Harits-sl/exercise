@@ -6,7 +6,6 @@ import 'package:exercise/providers/last_studied_provider.dart';
 import 'package:exercise/providers/object_detail.dart';
 import 'package:exercise/providers/youtube_id_provider.dart';
 import 'package:exercise/widgets/icon_star.dart';
-import 'package:exercise/widgets/video_course.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -14,14 +13,74 @@ import 'package:provider/provider.dart';
 import 'package:exercise/providers/course_detail_provider.dart';
 import 'package:exercise/theme.dart';
 import 'package:exercise/widgets/card_mentor.dart';
+import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
-class DetailCoursePage extends StatelessWidget {
+class DetailCoursePage extends StatefulWidget {
   final int id;
+  final String trailerKelas;
 
   const DetailCoursePage({
     Key? key,
     required this.id,
+    required this.trailerKelas,
   }) : super(key: key);
+
+  @override
+  _DetailCoursePageState createState() => _DetailCoursePageState();
+}
+
+class _DetailCoursePageState extends State<DetailCoursePage> {
+  late YoutubePlayerController _controller;
+  late TextEditingController _idController;
+  late TextEditingController _seekToController;
+
+  late PlayerState _playerState;
+  late YoutubeMetaData _videoMetaData;
+  bool _isPlayerReady = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = YoutubePlayerController(
+      initialVideoId: widget.trailerKelas,
+      flags: const YoutubePlayerFlags(
+        mute: false,
+        autoPlay: true,
+        disableDragSeek: false,
+        loop: false,
+        isLive: false,
+        forceHD: true,
+      ),
+    )..addListener(listener);
+    _idController = TextEditingController();
+    _seekToController = TextEditingController();
+    _videoMetaData = const YoutubeMetaData();
+    _playerState = PlayerState.unknown;
+  }
+
+  void listener() {
+    if (_isPlayerReady && mounted && !_controller.value.isFullScreen) {
+      setState(() {
+        _playerState = _controller.value.playerState;
+        _videoMetaData = _controller.metadata;
+      });
+    }
+  }
+
+  @override
+  void deactivate() {
+    // Pauses video while navigating to next page.
+    _controller.pause();
+    super.deactivate();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    _idController.dispose();
+    _seekToController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -64,19 +123,19 @@ class DetailCoursePage extends StatelessWidget {
       );
     }
 
-    Widget trailerVideo(String trailerKelas) {
-      return Container(
-        padding: EdgeInsets.only(
-          left: defaultMargin,
-          right: defaultMargin,
-          top: defaultMargin,
-        ),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(24),
-          child: VideoCourse(youtubeId: trailerKelas),
-        ),
-      );
-    }
+    // Widget trailerVideo(String trailerKelas) {
+    //   return Container(
+    //     padding: EdgeInsets.only(
+    //       left: defaultMargin,
+    //       right: defaultMargin,
+    //       top: defaultMargin,
+    //     ),
+    //     child: ClipRRect(
+    //       borderRadius: BorderRadius.circular(24),
+    //       child: VideoCourse(youtubeId: trailerKelas),
+    //     ),
+    //   );
+    // }
 
     Widget header({
       required String namaKelas,
@@ -431,7 +490,6 @@ class DetailCoursePage extends StatelessWidget {
 
       return Column(
         children: [
-          trailerVideo(data.trailerKelas),
           header(
             namaKelas: data.namaKelas,
             tagline: data.tagline,
@@ -453,177 +511,199 @@ class DetailCoursePage extends StatelessWidget {
       );
     }
 
-    Widget floatingActionButton(data) {
-      List listCourseId = [];
-      List listNamaMateri = [];
-      List listVideoMateri = [];
-      List listIsDone = [];
-      List listIsExpanded = [];
-      List l = [];
-
-      return SizedBox(
-        width: MediaQuery.of(context).size.width - (defaultMargin * 2),
-        height: 50,
-        child: FloatingActionButton.extended(
-          onPressed: () {
-            objectDetailProvider.objectDetail = data;
-
-            print(objectDetailProvider.objectDetail);
-
-            void _addListId(value) {
-              listCourseId.add(value);
-            }
-
-            void _addListMateri(value) {
-              listNamaMateri.add(value);
-            }
-
-            void _addListVideo(value) {
-              listVideoMateri.add(value);
-            }
-
-            void b(value) {
-              l.add(value);
-            }
-
-            void _addListExpanded(value) {
-              listIsExpanded.add(value);
-            }
-
-            void _addListDone(value) {
-              listIsDone.add(value);
-            }
-
-            var id = data.bagian.map((item) => item).map((item) {
-              for (var i = 0; i < item['materi_kelas'].length; i++) {
-                _addListId(item['materi_kelas'][i]['id']);
-              }
-            });
-
-            var namaMateri = data.bagian.map((item) => item).map((item) {
-              for (var i = 0; i < item['materi_kelas'].length; i++) {
-                _addListMateri(item['materi_kelas'][i]['nama_materi']);
-              }
-            });
-
-            var videoMateri = data.bagian.map((item) => item).map((item) {
-              for (var i = 0; i < item['materi_kelas'].length; i++) {
-                _addListVideo(item['materi_kelas'][i]['video_materi']);
-              }
-            });
-
-            var a = data.bagian.map((item) => item).map((item) {
-              for (var i = 0; i < item['materi_kelas'].length; i++) {
-                b(item['materi_kelas'][i]);
-              }
-            });
-            print(a);
-            print(id);
-            print(namaMateri);
-            print(videoMateri);
-
-            for (var i = 0; i < data.bagian.length; i++) {
-              _addListExpanded(true);
-            }
-
-            for (var i = 0; i < listCourseId.length; i++) {
-              _addListDone(false);
-            }
-
-            objectDetailProvider.materi = {
-              'id': listCourseId.first,
-              'idMateriBagian': data.bagian[0]['materi_kelas'][0]
-                  ['id_bagian_kelas'],
-              'namaMateri': listNamaMateri.first,
-              'videoMateri': listVideoMateri.first,
-            };
-
-            lastStudiedProvider.lastCourse = {
-              'namaMateri': listNamaMateri.first,
-              'listId': listCourseId,
-              'listMateri': listNamaMateri,
-              'listVideo': listVideoMateri,
-              'listIsExpanded': listIsExpanded,
-              'listIsDone': listIsDone,
-              'materiBagian': l,
-              'imageUrl': data.thumbnailKelas,
-              'index': 0,
-              'materi': data.bagian,
-            };
-
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                builder: (context) => MateriVideoPage(
-                  listId: listCourseId,
-                  listMateri: listNamaMateri,
-                  listVideo: listVideoMateri,
-                  listIsExpanded: listIsExpanded,
-                  listIsDone: listIsDone,
-                  materiBagian: l,
-                  materi: data.bagian,
-                  index: 0,
-                ),
-              ),
-            );
-          },
-          elevation: 0,
-          label: Text(
-            'Gabung Kelas',
-            style: whiteTextStyle.copyWith(
-              fontWeight: medium,
-              fontSize: 14,
-            ),
-          ),
-          backgroundColor: blueColor,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(
-              Radius.circular(14),
-            ),
-          ),
-        ),
-      );
-    }
-
-    Widget body() {
-      return FutureBuilder(
-        future: courseDetailProvider.getDetail(id),
+    return Scaffold(
+      body: FutureBuilder(
+        future: courseDetailProvider.getDetail(widget.id),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
-            return OrientationBuilder(
-              builder: (BuildContext context, Orientation orientation) {
-                // ketika device landscape
-                // hanya mengembalikan youtube video player
-                if (orientation == Orientation.landscape) {
-                  return VideoCourse(youtubeId: snapshot.data.trailerKelas);
-                } else {
-                  return Scaffold(
-                    body: SafeArea(
-                      bottom: false,
-                      child: ListView(
-                        children: [
-                          appBar(),
-                          content(snapshot.data),
-                        ],
+            var data = snapshot.data;
+
+            YoutubePlayer youtubePlayer = YoutubePlayer(
+              controller: _controller,
+              // aspect ratio ketika landscape
+              aspectRatio: 19 / 9,
+            );
+
+            Widget buttonJoinClass() {
+              List listCourseId = [];
+              List listNamaMateri = [];
+              List listVideoMateri = [];
+              List listIsDone = [];
+              List listIsExpanded = [];
+              List l = [];
+
+              return Container(
+                width: MediaQuery.of(context).size.width - (defaultMargin * 2),
+                height: 45,
+                decoration: BoxDecoration(
+                  color: blueColor,
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(14),
+                  ),
+                ),
+                margin: EdgeInsets.only(
+                  bottom: defaultMargin,
+                ),
+                child: TextButton(
+                  onPressed: () {
+                    objectDetailProvider.objectDetail = data;
+
+                    void _addListId(value) {
+                      listCourseId.add(value);
+                    }
+
+                    void _addListMateri(value) {
+                      listNamaMateri.add(value);
+                    }
+
+                    void _addListVideo(value) {
+                      listVideoMateri.add(value);
+                    }
+
+                    void b(value) {
+                      l.add(value);
+                    }
+
+                    void _addListExpanded(value) {
+                      listIsExpanded.add(value);
+                    }
+
+                    void _addListDone(value) {
+                      listIsDone.add(value);
+                    }
+
+                    var id = data.bagian.map((item) => item).map((item) {
+                      for (var i = 0; i < item['materi_kelas'].length; i++) {
+                        _addListId(item['materi_kelas'][i]['id']);
+                      }
+                    });
+
+                    var namaMateri =
+                        data.bagian.map((item) => item).map((item) {
+                      for (var i = 0; i < item['materi_kelas'].length; i++) {
+                        _addListMateri(item['materi_kelas'][i]['nama_materi']);
+                      }
+                    });
+
+                    var videoMateri =
+                        data.bagian.map((item) => item).map((item) {
+                      for (var i = 0; i < item['materi_kelas'].length; i++) {
+                        _addListVideo(item['materi_kelas'][i]['video_materi']);
+                      }
+                    });
+
+                    var a = data.bagian.map((item) => item).map((item) {
+                      for (var i = 0; i < item['materi_kelas'].length; i++) {
+                        b(item['materi_kelas'][i]);
+                      }
+                    });
+                    print(a);
+                    print(id);
+                    print(namaMateri);
+                    print(videoMateri);
+
+                    for (var i = 0; i < data.bagian.length; i++) {
+                      _addListExpanded(true);
+                    }
+
+                    for (var i = 0; i < listCourseId.length; i++) {
+                      _addListDone(false);
+                    }
+
+                    objectDetailProvider.materi = {
+                      'id': listCourseId.first,
+                      'idMateriBagian': data.bagian[0]['materi_kelas'][0]
+                          ['id_bagian_kelas'],
+                      'namaMateri': listNamaMateri.first,
+                      'videoMateri': listVideoMateri.first,
+                    };
+
+                    lastStudiedProvider.lastCourse = {
+                      'namaMateri': listNamaMateri.first,
+                      'listId': listCourseId,
+                      'listMateri': listNamaMateri,
+                      'listVideo': listVideoMateri,
+                      'listIsExpanded': listIsExpanded,
+                      'listIsDone': listIsDone,
+                      'materiBagian': l,
+                      'imageUrl': data.thumbnailKelas,
+                      'index': 0,
+                      'materi': data.bagian,
+                    };
+
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => MateriVideoPage(
+                          listId: listCourseId,
+                          listMateri: listNamaMateri,
+                          listVideo: listVideoMateri,
+                          listIsExpanded: listIsExpanded,
+                          listIsDone: listIsDone,
+                          materiBagian: l,
+                          materi: data.bagian,
+                          index: 0,
+                        ),
                       ),
+                    );
+                  },
+                  child: Text(
+                    'Gabung Kelas',
+                    style: whiteTextStyle.copyWith(
+                      fontWeight: medium,
+                      fontSize: 14,
                     ),
-                    floatingActionButton: floatingActionButton(snapshot.data),
-                    floatingActionButtonLocation:
-                        FloatingActionButtonLocation.centerFloat,
-                  );
-                }
+                  ),
+                ),
+              );
+            }
+
+            return YoutubePlayerBuilder(
+              player: youtubePlayer,
+              builder: (context, player) {
+                return Scaffold(
+                  body: SafeArea(
+                    bottom: false,
+                    child: Stack(
+                      children: [
+                        ListView(
+                          children: [
+                            appBar(),
+                            Container(
+                              padding: EdgeInsets.only(
+                                left: defaultMargin,
+                                right: defaultMargin,
+                                top: defaultMargin,
+                              ),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(24),
+                                child: AspectRatio(
+                                  aspectRatio: 16 / 9,
+                                  child: player,
+                                ),
+                              ),
+                            ),
+                            content(data),
+                          ],
+                        ),
+                        // button next page
+                        Align(
+                          alignment: FractionalOffset.bottomCenter,
+                          child: buttonJoinClass(),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
               },
             );
           }
+
           return Center(
             child: CircularProgressIndicator(),
           );
         },
-      );
-    }
-
-    return Scaffold(
-      body: body(),
+      ),
     );
   }
 }

@@ -15,7 +15,10 @@ class SearchResultItem extends StatelessWidget {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => DetailCoursePage(id: course.id),
+            builder: (context) => DetailCoursePage(
+              id: course.id,
+              trailerKelas: course.trailerKelas,
+            ),
           ),
         );
       },

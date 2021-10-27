@@ -48,29 +48,25 @@ class FinishCoursePage extends StatelessWidget {
                 SizedBox(
                   height: 50,
                 ),
-                ElevatedButton(
-                  style: ButtonStyle(
-                      fixedSize: MaterialStateProperty.all(
-                        Size.fromWidth(
-                          MediaQuery.of(context).size.width -
-                              (defaultMargin * 2),
+                Container(
+                  width:
+                      MediaQuery.of(context).size.width - (defaultMargin * 2),
+                  height: 45,
+                  decoration: BoxDecoration(
+                    color: blueColor,
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(14),
+                    ),
+                  ),
+                  child: TextButton(
+                    onPressed: () {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => HomePage(),
                         ),
-                      ),
-                      backgroundColor: MaterialStateProperty.all(blueColor),
-                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                          RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(14),
-                      ))),
-                  onPressed: () {
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => HomePage(),
-                      ),
-                    );
-                  },
-                  child: Padding(
-                    padding: const EdgeInsets.all(12),
+                      );
+                    },
                     child: Text(
                       'My Dashboard',
                       style: whiteTextStyle.copyWith(

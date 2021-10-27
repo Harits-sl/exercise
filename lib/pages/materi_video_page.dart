@@ -256,8 +256,6 @@ class _MateriVideoPageState extends State<MateriVideoPage> {
               (id) => id == objectDetailProvider.materi['id'],
             );
 
-            print(widget.materiBagian[searchIndexId]);
-
             lastStudiedProvider.lastCourse = {
               'namaMateri': widget.listMateri[searchIndexId + 1],
               'listId': widget.listId,
@@ -356,46 +354,122 @@ class _MateriVideoPageState extends State<MateriVideoPage> {
       );
     }
 
+    Widget buttonNextVideo() {
+      return Container(
+        width: MediaQuery.of(context).size.width - (defaultMargin * 2),
+        height: 45,
+        decoration: BoxDecoration(
+          color: blueColor,
+          borderRadius: BorderRadius.all(
+            Radius.circular(14),
+          ),
+        ),
+        margin: EdgeInsets.only(
+          bottom: defaultMargin,
+        ),
+        child: TextButton(
+          onPressed: () {
+            _scrollController.animateTo(
+              0,
+              duration: Duration(milliseconds: 200),
+              curve: Curves.linear,
+            );
+
+            if (widget.listId.last == objectDetailProvider.materi['id']) {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => FinishCoursePage(),
+                ),
+              );
+            }
+
+            var searchIndexId = widget.listId.indexWhere(
+              (id) => id == objectDetailProvider.materi['id'],
+            );
+
+            lastStudiedProvider.lastCourse = {
+              'namaMateri': widget.listMateri[searchIndexId + 1],
+              'listId': widget.listId,
+              'listMateri': widget.listMateri,
+              'listVideo': widget.listVideo,
+              'listIsExpanded': widget.listIsExpanded,
+              'listIsDone': widget.listIsDone,
+              'materiBagian': widget.materiBagian,
+              'imageUrl': objectDetailProvider.objectDetail.thumbnailKelas,
+              'index': searchIndexId + 1, //last id yang dipelajari
+              'materi': widget.materi,
+            };
+            objectDetailProvider.materi = {
+              'id': widget.listId[searchIndexId + 1],
+              'namaMateri': widget.listMateri[searchIndexId + 1],
+              'videoMateri': widget.listVideo[searchIndexId + 1],
+              'listIdMateriBagian': idMateriBagian,
+              'idMateriBagian': widget.materiBagian[searchIndexId + 1]
+                  ['id_bagian_kelas'],
+            };
+
+            setState(() {
+              widget.listIsDone[searchIndexId] = true;
+            });
+          },
+          child: Text(
+            'Tandakan Selesai & Next Video',
+            style: whiteTextStyle.copyWith(
+              fontWeight: medium,
+              fontSize: 14,
+            ),
+          ),
+        ),
+      );
+    }
+
     return YoutubePlayerBuilder(
       player: youtubePlayer,
       builder: (context, player) {
         return Scaffold(
           backgroundColor: backgroundColor,
           body: SafeArea(
-            left: false,
-            right: false,
             bottom: false,
-            child: ListView(
-              controller: _scrollController,
+            child: Stack(
               children: [
-                appBar(),
-                header(),
-                Container(
-                  padding: EdgeInsets.only(
-                    left: defaultMargin,
-                    right: defaultMargin,
-                    top: 12,
-                  ),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(24),
-                    child: AspectRatio(
-                      aspectRatio: 16 / 9,
-                      child: player,
+                ListView(
+                  controller: _scrollController,
+                  children: [
+                    appBar(),
+                    header(),
+                    Container(
+                      padding: EdgeInsets.only(
+                        left: defaultMargin,
+                        right: defaultMargin,
+                        top: 12,
+                      ),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(24),
+                        child: AspectRatio(
+                          aspectRatio: 16 / 9,
+                          child: player,
+                        ),
+                      ),
                     ),
-                  ),
+                    Materi(
+                      listIsExpanded: widget.listIsExpanded,
+                      listIsDone: widget.listIsDone,
+                      scrollController: _scrollController,
+                    ),
+                    toolKelas(),
+                  ],
                 ),
-                Materi(
-                  listIsExpanded: widget.listIsExpanded,
-                  listIsDone: widget.listIsDone,
-                  scrollController: _scrollController,
+                Align(
+                  alignment: FractionalOffset.bottomCenter,
+                  child: buttonNextVideo(),
                 ),
-                toolKelas(),
               ],
             ),
           ),
-          floatingActionButton: floatingActionButton(),
-          floatingActionButtonLocation:
-              FloatingActionButtonLocation.centerFloat,
+          // floatingActionButton: floatingActionButton(),
+          // floatingActionButtonLocation:
+          //     FloatingActionButtonLocation.centerFloat,
         );
       },
     );
