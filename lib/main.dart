@@ -14,7 +14,6 @@ import './network/api/course_search_provider.dart';
 import './providers/search_provider.dart';
 import './providers/last_studied_provider.dart';
 import './providers/object_detail.dart';
-import './providers/youtube_id_provider.dart';
 
 // page
 import './ui/pages/splash_page.dart';
@@ -56,9 +55,6 @@ class MyApp extends StatelessWidget {
         ),
 
         // provider
-        ChangeNotifierProvider<YoutubeIdProvider>(
-          create: (context) => YoutubeIdProvider(),
-        ),
         ChangeNotifierProvider<SearchProvider>(
           create: (context) => SearchProvider(),
         ),
@@ -71,7 +67,7 @@ class MyApp extends StatelessWidget {
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
-        home: SplashScreen(),
+        home: SplashPage(),
       ),
     );
   }

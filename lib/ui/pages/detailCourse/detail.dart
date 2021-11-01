@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
-import 'package:provider/provider.dart';
 
 import 'package:exercise/models/course_detail_model.dart';
-import 'package:exercise/providers/youtube_id_provider.dart';
 
 import '../../widgets/card_mentor.dart';
 import '../../widgets/icon_star.dart';
@@ -17,8 +15,6 @@ class Detail extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var youtubeIdProvider = Provider.of<YoutubeIdProvider>(context);
-
     Widget header({
       required String namaKelas,
       required String tagline,
@@ -368,7 +364,6 @@ class Detail extends StatelessWidget {
       });
       print(video);
       print(duration);
-      youtubeIdProvider.youtubeId = data.trailerKelas;
 
       return Column(
         children: [

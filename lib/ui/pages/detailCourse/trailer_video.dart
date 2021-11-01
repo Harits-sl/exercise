@@ -8,7 +8,7 @@ import 'package:exercise/providers/last_studied_provider.dart';
 import 'package:exercise/providers/object_detail.dart';
 
 import './detail.dart';
-import '../materi_video_page.dart';
+import '../materiKelas/materi_kelas_page.dart';
 import '../../widgets/custom_button.dart';
 import '../../../shared/theme.dart';
 
@@ -156,7 +156,7 @@ class _TrailerVideoState extends State<TrailerVideo> {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (context) => MateriVideoPage(
+          builder: (context) => MateriKelasPage(
             listId: listCourseId,
             listMateri: listNamaMateri,
             listVideo: listVideoMateri,

@@ -6,7 +6,7 @@ import 'package:exercise/network/api/course_starter_provider.dart';
 import 'package:exercise/providers/last_studied_provider.dart';
 import 'package:exercise/providers/search_provider.dart';
 
-import './materi_video_page.dart';
+import './materiKelas/materi_kelas_page.dart';
 import './search_page.dart';
 import '../widgets/card_course.dart';
 import '../widgets/category_item.dart';
@@ -126,7 +126,7 @@ class HomePage extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => MateriVideoPage(
+                    builder: (context) => MateriKelasPage(
                       listId: lastStudiedProvider.lastCourse['listId'],
                       listMateri: lastStudiedProvider.lastCourse['listMateri'],
                       listVideo: lastStudiedProvider.lastCourse['listVideo'],

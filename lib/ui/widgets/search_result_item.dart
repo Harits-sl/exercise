@@ -42,7 +42,7 @@ class SearchResultItem extends StatelessWidget {
             ClipRRect(
               borderRadius: BorderRadius.circular(12),
               child: Image.network(
-                'https://bwasandbox.com/${course.thumbnailKelas}',
+                'https://bwasandbox.com${course.thumbnailKelas}',
                 width: 62,
                 height: 62,
                 fit: BoxFit.cover,
