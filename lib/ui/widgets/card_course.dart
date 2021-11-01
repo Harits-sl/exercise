@@ -46,7 +46,7 @@ class CardCourse extends StatelessWidget {
                 topRight: Radius.circular(12),
               ),
               child: Image.network(
-                'https://bwasandbox.com/${course.thumbnailKelas}',
+                'https://bwasandbox.com${course.thumbnailKelas}',
                 width: 212,
                 height: 110,
                 fit: BoxFit.cover,

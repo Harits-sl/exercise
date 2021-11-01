@@ -1,17 +1,18 @@
 import 'dart:async';
-
-import 'package:exercise/providers/last_studied_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
-import './finish_course_page.dart';
-import 'package:exercise/providers/object_detail.dart';
-import 'package:exercise/shared/theme.dart';
-import '../widgets/card_tool.dart';
-import '../widgets/materi.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
-class MateriVideoPage extends StatefulWidget {
+import 'package:exercise/providers/last_studied_provider.dart';
+import 'package:exercise/providers/object_detail.dart';
+
+import '../finish_course_page.dart';
+import '../../widgets/materi.dart';
+import '../../widgets/card_tool.dart';
+import '../../widgets/custom_button.dart';
+import '../../../shared/theme.dart';
+
+class MateriKelasPage extends StatefulWidget {
   final List listId;
   final List listMateri;
   final List listVideo;
@@ -21,7 +22,7 @@ class MateriVideoPage extends StatefulWidget {
   final List materi;
   final int index;
 
-  const MateriVideoPage({
+  const MateriKelasPage({
     Key? key,
     required this.listId,
     required this.listMateri,
@@ -34,10 +35,10 @@ class MateriVideoPage extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _MateriVideoPageState createState() => _MateriVideoPageState();
+  _MateriKelasPageState createState() => _MateriKelasPageState();
 }
 
-class _MateriVideoPageState extends State<MateriVideoPage> {
+class _MateriKelasPageState extends State<MateriKelasPage> {
   late YoutubePlayerController _controller;
   late TextEditingController _idController;
   late TextEditingController _seekToController;
@@ -52,7 +53,7 @@ class _MateriVideoPageState extends State<MateriVideoPage> {
   void initState() {
     super.initState();
 
-    _scrollController = ScrollController()..addListener(() {});
+    _scrollController = ScrollController();
 
     _controller = YoutubePlayerController(
       initialVideoId: widget.listVideo[widget.index],
@@ -120,7 +121,7 @@ class _MateriVideoPageState extends State<MateriVideoPage> {
             scroll(currentScroll);
           });
         }
-        if (position == 0) {
+        if (position == 0 && !_controller.value.isFullScreen) {
           Timer(Duration(milliseconds: 1000), () {
             _controller.load(objectDetailProvider.materi['videoMateri']);
           });
@@ -146,6 +147,52 @@ class _MateriVideoPageState extends State<MateriVideoPage> {
         (id) => id == objectDetailProvider.materi['idMateriBagian'],
       );
       return index;
+    }
+
+    void methodForButton() {
+      _scrollController.animateTo(
+        0,
+        duration: Duration(milliseconds: 200),
+        curve: Curves.linear,
+      );
+
+      if (widget.listId.last == objectDetailProvider.materi['id']) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => FinishCoursePage(),
+          ),
+        );
+      }
+
+      var searchIndexId = widget.listId.indexWhere(
+        (id) => id == objectDetailProvider.materi['id'],
+      );
+
+      lastStudiedProvider.lastCourse = {
+        'namaMateri': widget.listMateri[searchIndexId + 1],
+        'listId': widget.listId,
+        'listMateri': widget.listMateri,
+        'listVideo': widget.listVideo,
+        'listIsExpanded': widget.listIsExpanded,
+        'listIsDone': widget.listIsDone,
+        'materiBagian': widget.materiBagian,
+        'imageUrl': objectDetailProvider.objectDetail.thumbnailKelas,
+        'index': searchIndexId + 1, //last id yang dipelajari
+        'materi': widget.materi,
+      };
+      objectDetailProvider.materi = {
+        'id': widget.listId[searchIndexId + 1],
+        'namaMateri': widget.listMateri[searchIndexId + 1],
+        'videoMateri': widget.listVideo[searchIndexId + 1],
+        'listIdMateriBagian': idMateriBagian,
+        'idMateriBagian': widget.materiBagian[searchIndexId + 1]
+            ['id_bagian_kelas'],
+      };
+
+      setState(() {
+        widget.listIsDone[searchIndexId] = true;
+      });
     }
 
     Widget appBar() {
@@ -230,74 +277,6 @@ class _MateriVideoPageState extends State<MateriVideoPage> {
       );
     }
 
-    Widget floatingActionButton() {
-      return SizedBox(
-        width: MediaQuery.of(context).size.width - (defaultMargin * 2),
-        height: 50,
-        child: FloatingActionButton.extended(
-          onPressed: () {
-            _scrollController.animateTo(
-              0,
-              duration: Duration(milliseconds: 200),
-              curve: Curves.linear,
-            );
-
-            if (widget.listId.last == objectDetailProvider.materi['id']) {
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => FinishCoursePage(),
-                ),
-              );
-            }
-
-            var searchIndexId = widget.listId.indexWhere(
-              (id) => id == objectDetailProvider.materi['id'],
-            );
-
-            lastStudiedProvider.lastCourse = {
-              'namaMateri': widget.listMateri[searchIndexId + 1],
-              'listId': widget.listId,
-              'listMateri': widget.listMateri,
-              'listVideo': widget.listVideo,
-              'listIsExpanded': widget.listIsExpanded,
-              'listIsDone': widget.listIsDone,
-              'materiBagian': widget.materiBagian,
-              'imageUrl': objectDetailProvider.objectDetail.thumbnailKelas,
-              'index': searchIndexId + 1, //last id yang dipelajari
-              'materi': widget.materi,
-            };
-            objectDetailProvider.materi = {
-              'id': widget.listId[searchIndexId + 1],
-              'namaMateri': widget.listMateri[searchIndexId + 1],
-              'videoMateri': widget.listVideo[searchIndexId + 1],
-              'listIdMateriBagian': idMateriBagian,
-              'idMateriBagian': widget.materiBagian[searchIndexId + 1]
-                  ['id_bagian_kelas'],
-            };
-
-            setState(() {
-              widget.listIsDone[searchIndexId] = true;
-            });
-          },
-          elevation: 0,
-          label: Text(
-            'Tandakan Selesai & Next Video',
-            style: whiteTextStyle.copyWith(
-              fontWeight: medium,
-              fontSize: 14,
-            ),
-          ),
-          backgroundColor: blueColor,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(
-              Radius.circular(14),
-            ),
-          ),
-        ),
-      );
-    }
-
     Widget toolKelas() {
       return Container(
         padding: EdgeInsets.only(
@@ -353,76 +332,6 @@ class _MateriVideoPageState extends State<MateriVideoPage> {
       );
     }
 
-    Widget buttonNextVideo() {
-      return Container(
-        width: MediaQuery.of(context).size.width - (defaultMargin * 2),
-        height: 45,
-        decoration: BoxDecoration(
-          color: blueColor,
-          borderRadius: BorderRadius.all(
-            Radius.circular(14),
-          ),
-        ),
-        margin: EdgeInsets.only(
-          bottom: defaultMargin,
-        ),
-        child: TextButton(
-          onPressed: () {
-            _scrollController.animateTo(
-              0,
-              duration: Duration(milliseconds: 200),
-              curve: Curves.linear,
-            );
-
-            if (widget.listId.last == objectDetailProvider.materi['id']) {
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => FinishCoursePage(),
-                ),
-              );
-            }
-
-            var searchIndexId = widget.listId.indexWhere(
-              (id) => id == objectDetailProvider.materi['id'],
-            );
-
-            lastStudiedProvider.lastCourse = {
-              'namaMateri': widget.listMateri[searchIndexId + 1],
-              'listId': widget.listId,
-              'listMateri': widget.listMateri,
-              'listVideo': widget.listVideo,
-              'listIsExpanded': widget.listIsExpanded,
-              'listIsDone': widget.listIsDone,
-              'materiBagian': widget.materiBagian,
-              'imageUrl': objectDetailProvider.objectDetail.thumbnailKelas,
-              'index': searchIndexId + 1, //last id yang dipelajari
-              'materi': widget.materi,
-            };
-            objectDetailProvider.materi = {
-              'id': widget.listId[searchIndexId + 1],
-              'namaMateri': widget.listMateri[searchIndexId + 1],
-              'videoMateri': widget.listVideo[searchIndexId + 1],
-              'listIdMateriBagian': idMateriBagian,
-              'idMateriBagian': widget.materiBagian[searchIndexId + 1]
-                  ['id_bagian_kelas'],
-            };
-
-            setState(() {
-              widget.listIsDone[searchIndexId] = true;
-            });
-          },
-          child: Text(
-            'Tandakan Selesai & Next Video',
-            style: whiteTextStyle.copyWith(
-              fontWeight: medium,
-              fontSize: 14,
-            ),
-          ),
-        ),
-      );
-    }
-
     return YoutubePlayerBuilder(
       player: youtubePlayer,
       builder: (context, player) {
@@ -461,14 +370,14 @@ class _MateriVideoPageState extends State<MateriVideoPage> {
                 ),
                 Align(
                   alignment: FractionalOffset.bottomCenter,
-                  child: buttonNextVideo(),
+                  child: CustomButton(
+                    title: 'Tandakan Selesai & Next Video',
+                    method: methodForButton,
+                  ),
                 ),
               ],
             ),
           ),
-          // floatingActionButton: floatingActionButton(),
-          // floatingActionButtonLocation:
-          //     FloatingActionButtonLocation.centerFloat,
         );
       },
     );
