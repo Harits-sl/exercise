@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:exercise/firebase/crashlytics.dart';
 import 'package:exercise/models/search_model.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -15,8 +16,9 @@ class CourseSearchProvider with ChangeNotifier {
             data.map((item) => SearchModel.fromJson(item)).toList();
         return listCourse;
       }
-    } catch (e) {
-      print(e);
+    } catch (err, stackTrace) {
+      print(err);
+      Crashlytics.recordError(err, stackTrace, 'error in api');
     }
   }
 }

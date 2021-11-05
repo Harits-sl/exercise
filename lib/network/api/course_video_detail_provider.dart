@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:exercise/firebase/crashlytics.dart';
 import 'package:exercise/models/course_video_detail_model.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -17,8 +18,9 @@ class CourseVideoDetailProvider with ChangeNotifier {
 
         return course;
       }
-    } catch (e) {
-      print(e);
+    } catch (err, stackTrace) {
+      print(err);
+      Crashlytics.recordError(err, stackTrace, 'error in api');
     }
   }
 }

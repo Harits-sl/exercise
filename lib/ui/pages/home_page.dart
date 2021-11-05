@@ -1,3 +1,4 @@
+import 'package:exercise/firebase/crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -277,6 +278,12 @@ class HomePage extends StatelessWidget {
                           ),
                         );
                       }).toList(),
+                    );
+                  } else if (snapshot.hasError) {
+                    Crashlytics.recordError(
+                      snapshot.error,
+                      snapshot.stackTrace,
+                      'error in homepage',
                     );
                   }
                   return Center(

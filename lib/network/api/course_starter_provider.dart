@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:exercise/firebase/crashlytics.dart';
 import 'package:exercise/models/course_starter_model.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
@@ -17,8 +18,9 @@ class CourseStarterProvider with ChangeNotifier {
 
         return listCourses;
       }
-    } catch (e) {
-      print(e);
+    } catch (err, stackTrace) {
+      print(err);
+      Crashlytics.recordError(err, stackTrace, 'error in api');
     }
   }
 
@@ -34,8 +36,9 @@ class CourseStarterProvider with ChangeNotifier {
 
         return listCourses;
       }
-    } catch (e) {
-      print(e);
+    } catch (err, stackTrace) {
+      print(err);
+      Crashlytics.recordError(err, stackTrace, 'error in api');
     }
   }
 }

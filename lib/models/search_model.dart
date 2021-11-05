@@ -5,6 +5,7 @@ class SearchModel {
   final String authorKelas;
   final String trailerKelas;
   final int joinedAmount;
+  final List authors;
 
   SearchModel({
     required this.id,
@@ -13,6 +14,7 @@ class SearchModel {
     required this.authorKelas,
     required this.trailerKelas,
     required this.joinedAmount,
+    required this.authors,
   });
 
   factory SearchModel.fromJson(Map<String, dynamic> json) {
@@ -24,6 +26,7 @@ class SearchModel {
       authorKelas: json['author_kelas'] ?? '',
       trailerKelas: json['trailer_kelas'] ?? '',
       joinedAmount: json['joined_amount'] ?? 0,
+      authors: json['authors'] ?? '',
     );
   }
 }

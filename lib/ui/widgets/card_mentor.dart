@@ -1,3 +1,4 @@
+import 'package:exercise/helpers/string_helper.dart';
 import 'package:flutter/material.dart';
 
 import './icon_star.dart';
@@ -27,15 +28,17 @@ class CardMentor extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          // Image.network(
-          //   'https://buildwithangga.com${author['avatar']}',
-          //   width: 42,
-          // ),
+          CircleAvatar(
+            child: Image.network(
+              'https://buildwithangga.com${author['avatar']}',
+              width: 42,
+            ),
+          ),
           SizedBox(
             height: 14,
           ),
           Text(
-            author['name'],
+            StringHelper.toTitleCase(author['name']),
             style: primaryTextStyle.copyWith(
               fontWeight: semiBold,
               fontSize: 14,

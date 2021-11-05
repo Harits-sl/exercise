@@ -1,3 +1,4 @@
+import 'package:exercise/ui/widgets/custom_button.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:exercise/providers/object_detail.dart';
@@ -11,6 +12,15 @@ class FinishCoursePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var objectDetailProvider = Provider.of<ObjectDetailProvider>(context);
+
+    void method() {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => HomePage(),
+        ),
+      );
+    }
 
     return Scaffold(
       body: Center(
@@ -49,33 +59,9 @@ class FinishCoursePage extends StatelessWidget {
                 SizedBox(
                   height: 50,
                 ),
-                Container(
-                  width:
-                      MediaQuery.of(context).size.width - (defaultMargin * 2),
-                  height: 45,
-                  decoration: BoxDecoration(
-                    color: blueColor,
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(14),
-                    ),
-                  ),
-                  child: TextButton(
-                    onPressed: () {
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => HomePage(),
-                        ),
-                      );
-                    },
-                    child: Text(
-                      'My Dashboard',
-                      style: whiteTextStyle.copyWith(
-                        fontWeight: medium,
-                        fontSize: 14,
-                      ),
-                    ),
-                  ),
+                CustomButton(
+                  title: 'My Dashboard',
+                  method: method,
                 ),
               ],
             ),

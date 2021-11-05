@@ -74,7 +74,7 @@ class CardCourse extends StatelessWidget {
                         width: 4,
                       ),
                       Text(
-                        course.authorKelas,
+                        StringHelper.toTitleCase(course.authors[0]['name']),
                         style: secondaryTextStyle.copyWith(
                           fontWeight: medium,
                           fontSize: 10,

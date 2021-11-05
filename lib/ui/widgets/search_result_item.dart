@@ -1,3 +1,4 @@
+import 'package:exercise/models/search_model.dart';
 import 'package:flutter/material.dart';
 
 import './icon_star.dart';
@@ -67,7 +68,7 @@ class SearchResultItem extends StatelessWidget {
                         width: 4,
                       ),
                       Text(
-                        course.authorKelas,
+                        StringHelper.toTitleCase(course.authors[0]['name']),
                         style: secondaryTextStyle.copyWith(
                           fontWeight: medium,
                           fontSize: 10,
