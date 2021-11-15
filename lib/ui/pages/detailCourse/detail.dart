@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 
-import 'package:exercise/models/course_detail_model.dart';
-
 import '../../widgets/card_mentor.dart';
 import '../../widgets/icon_star.dart';
 import '../../../shared/theme.dart';
 import '../../../helpers/string_helper.dart';
+import '../../../models/course_detail_model.dart';
 
 class Detail extends StatelessWidget {
   final CourseDetailModel data;

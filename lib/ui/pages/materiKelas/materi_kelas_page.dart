@@ -1,16 +1,24 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
-import 'package:exercise/providers/last_studied_provider.dart';
-import 'package:exercise/providers/object_detail.dart';
+// provider
+import '../../../providers/last_studied_provider.dart';
+import '../../../providers/object_detail.dart';
 
+// page
 import '../finish_course_page.dart';
+
+// widgets
 import '../../widgets/materi.dart';
 import '../../widgets/card_tool.dart';
 import '../../widgets/custom_button.dart';
+import '../../widgets/custom_in_app_web_view.dart';
+
+// theme
 import '../../../shared/theme.dart';
+
+// helpers
+import '../../../helpers/string_helper.dart';
 
 class MateriKelasPage extends StatefulWidget {
   final List listId;
@@ -39,60 +47,20 @@ class MateriKelasPage extends StatefulWidget {
 }
 
 class _MateriKelasPageState extends State<MateriKelasPage> {
-  late YoutubePlayerController _controller;
-  late TextEditingController _idController;
-  late TextEditingController _seekToController;
+  late int index;
   late ScrollController _scrollController;
   double currentScroll = 0;
-
-  late PlayerState _playerState;
-  late YoutubeMetaData _videoMetaData;
-  bool _isPlayerReady = false;
 
   @override
   void initState() {
     super.initState();
 
     _scrollController = ScrollController();
-
-    _controller = YoutubePlayerController(
-      initialVideoId: widget.listVideo[widget.index],
-      flags: const YoutubePlayerFlags(
-        mute: false,
-        autoPlay: true,
-        disableDragSeek: false,
-        loop: false,
-        isLive: false,
-        forceHD: true,
-      ),
-    )..addListener(listener);
-    _idController = TextEditingController();
-    _seekToController = TextEditingController();
-    _videoMetaData = const YoutubeMetaData();
-    _playerState = PlayerState.unknown;
-  }
-
-  void listener() {
-    if (_isPlayerReady && mounted && !_controller.value.isFullScreen) {
-      setState(() {
-        _playerState = _controller.value.playerState;
-        _videoMetaData = _controller.metadata;
-      });
-    }
-  }
-
-  @override
-  void deactivate() {
-    // Pauses video while navigating to next page.
-    _controller.pause();
-    super.deactivate();
+    index = widget.index;
   }
 
   @override
   void dispose() {
-    _controller.dispose();
-    _idController.dispose();
-    _seekToController.dispose();
     super.dispose();
   }
 
@@ -100,37 +68,6 @@ class _MateriKelasPageState extends State<MateriKelasPage> {
   Widget build(BuildContext context) {
     var objectDetailProvider = Provider.of<ObjectDetailProvider>(context);
     var lastStudiedProvider = Provider.of<LastStudiedProvider>(context);
-
-    YoutubePlayer youtubePlayer = YoutubePlayer(
-      controller: _controller,
-      // aspect ratio ketika landscape
-      aspectRatio: 19 / 9,
-    );
-
-    // ketika button next materi atau materi di klik
-    // jika position dibawah, setstate selama 0.5 detik
-    // jika posisition paling atas, tunggu 1 detik lalu
-    // load video baru
-    if (_scrollController.hasClients) {
-      void scroll(double position) {
-        if (position > 0) {
-          setState(() {
-            currentScroll = _scrollController.offset;
-          });
-          Timer(Duration(milliseconds: 500), () {
-            scroll(currentScroll);
-          });
-        }
-        if (position == 0 && !_controller.value.isFullScreen) {
-          Timer(Duration(milliseconds: 1000), () {
-            _controller.load(objectDetailProvider.materi['videoMateri']);
-          });
-          return;
-        }
-      }
-
-      scroll(_scrollController.offset);
-    }
 
     // untuk materi bagian
     // list idMateriBagian dari data id_bagian_kelas
@@ -149,6 +86,14 @@ class _MateriKelasPageState extends State<MateriKelasPage> {
       return index;
     }
 
+    var searchIndexId = widget.listId.indexWhere(
+      (id) => id == objectDetailProvider.materi['id'],
+    );
+
+    setState(() {
+      index = searchIndexId;
+    });
+
     void methodForButton() {
       _scrollController.animateTo(
         0,
@@ -164,10 +109,6 @@ class _MateriKelasPageState extends State<MateriKelasPage> {
           ),
         );
       }
-
-      var searchIndexId = widget.listId.indexWhere(
-        (id) => id == objectDetailProvider.materi['id'],
-      );
 
       lastStudiedProvider.lastCourse = {
         'namaMateri': widget.listMateri[searchIndexId + 1],
@@ -231,7 +172,9 @@ class _MateriKelasPageState extends State<MateriKelasPage> {
                     width: 4,
                   ),
                   Text(
-                    objectDetailProvider.objectDetail.authors[0]['name'],
+                    StringHelper.toTitleCase(
+                      objectDetailProvider.objectDetail.authors[0]['name'],
+                    ),
                     style: whiteTextStyle.copyWith(
                       fontSize: 10,
                       fontWeight: medium,
@@ -278,108 +221,112 @@ class _MateriKelasPageState extends State<MateriKelasPage> {
     }
 
     Widget toolKelas() {
-      return Container(
-        padding: EdgeInsets.only(
-          top: defaultMargin,
-          bottom: defaultMargin + 50,
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
+      return objectDetailProvider.objectDetail.tools.length != 0
+          ? Container(
               padding: EdgeInsets.only(
-                left: defaultMargin,
+                top: defaultMargin,
+                bottom: defaultMargin + 50,
               ),
-              child: Text(
-                'Tools Kelas',
-                style: primaryTextStyle.copyWith(
-                  fontWeight: semiBold,
-                  fontSize: 16,
-                ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: EdgeInsets.only(
+                      left: defaultMargin,
+                    ),
+                    child: Text(
+                      'Tools Kelas',
+                      style: primaryTextStyle.copyWith(
+                        fontWeight: semiBold,
+                        fontSize: 16,
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 12,
+                  ),
+                  Container(
+                    height: 135,
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: objectDetailProvider.objectDetail.tools.length,
+                      itemBuilder: (context, index) {
+                        return Row(
+                          children: [
+                            SizedBox(
+                              width: index == 0 ? defaultMargin : 12,
+                            ),
+                            CardTool(
+                              tools: objectDetailProvider
+                                  .objectDetail.tools[index],
+                            ),
+                            SizedBox(
+                              width: index ==
+                                      objectDetailProvider
+                                              .objectDetail.tools.length -
+                                          1
+                                  ? defaultMargin
+                                  : 0,
+                            ),
+                          ],
+                        );
+                      },
+                    ),
+                  ),
+                ],
               ),
-            ),
-            SizedBox(
-              height: 12,
-            ),
-            Container(
-              height: 135,
-              child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                itemCount: objectDetailProvider.objectDetail.tools.length,
-                itemBuilder: (context, index) {
-                  return Row(
-                    children: [
-                      SizedBox(
-                        width: index == 0 ? defaultMargin : 12,
-                      ),
-                      CardTool(
-                        tools: objectDetailProvider.objectDetail.tools[index],
-                      ),
-                      SizedBox(
-                        width: index ==
-                                objectDetailProvider.objectDetail.tools.length -
-                                    1
-                            ? defaultMargin
-                            : 0,
-                      ),
-                    ],
-                  );
-                },
-              ),
-            ),
-          ],
+            )
+          : Container();
+    }
+
+    Widget videoMateri() {
+      return Container(
+        width: 320,
+        height: 200,
+        padding: EdgeInsets.only(
+          left: defaultMargin,
+          right: defaultMargin,
+          top: defaultMargin,
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(24),
+          child: CustomInAppWebView(
+            trailerKelas: widget.listVideo[index],
+            key: UniqueKey(),
+          ),
         ),
       );
     }
 
-    return YoutubePlayerBuilder(
-      player: youtubePlayer,
-      builder: (context, player) {
-        return Scaffold(
-          backgroundColor: backgroundColor,
-          body: SafeArea(
-            bottom: false,
-            child: Stack(
+    return Scaffold(
+      backgroundColor: backgroundColor,
+      body: SafeArea(
+        child: Stack(
+          children: [
+            ListView(
+              controller: _scrollController,
               children: [
-                ListView(
-                  controller: _scrollController,
-                  children: [
-                    appBar(),
-                    header(),
-                    Container(
-                      padding: EdgeInsets.only(
-                        left: defaultMargin,
-                        right: defaultMargin,
-                        top: 12,
-                      ),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(24),
-                        child: AspectRatio(
-                          aspectRatio: 16 / 9,
-                          child: player,
-                        ),
-                      ),
-                    ),
-                    Materi(
-                      listIsExpanded: widget.listIsExpanded,
-                      listIsDone: widget.listIsDone,
-                      scrollController: _scrollController,
-                    ),
-                    toolKelas(),
-                  ],
+                appBar(),
+                header(),
+                videoMateri(),
+                Materi(
+                  listIsExpanded: widget.listIsExpanded,
+                  listIsDone: widget.listIsDone,
+                  scrollController: _scrollController,
                 ),
-                Align(
-                  alignment: FractionalOffset.bottomCenter,
-                  child: CustomButton(
-                    title: 'Tandakan Selesai & Next Video',
-                    method: methodForButton,
-                  ),
-                ),
+                toolKelas(),
               ],
             ),
-          ),
-        );
-      },
+            Align(
+              alignment: FractionalOffset.bottomCenter,
+              child: CustomButton(
+                title: 'Tandakan Selesai & Next Video',
+                method: methodForButton,
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
