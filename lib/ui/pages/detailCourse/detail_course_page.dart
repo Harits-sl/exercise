@@ -1,18 +1,28 @@
-import 'package:exercise/models/course_detail_model.dart';
-import 'package:exercise/providers/last_studied_provider.dart';
-import 'package:exercise/providers/object_detail.dart';
-import 'package:exercise/shared/theme.dart';
-import 'package:exercise/ui/pages/detailCourse/detail.dart';
-import 'package:exercise/ui/pages/detailCourse/web_view.dart';
-import 'package:exercise/ui/pages/materiKelas/materi_kelas_page.dart';
-import 'package:exercise/ui/widgets/custom_button.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'package:exercise/network/api/course_detail_provider.dart';
-import './trailer_video.dart';
+// pages
+import './detail.dart';
 
-class DetailCoursePage extends StatelessWidget {
+// theme
+import '../../../shared/theme.dart';
+
+// widgets
+import '../../widgets/custom_in_app_web_view.dart';
+import '../../widgets/custom_button.dart';
+
+// provider
+import '../../../providers/last_studied_provider.dart';
+import '../../../providers/object_detail.dart';
+import '../materiKelas/materi_kelas_page.dart';
+
+// models
+import '../../../models/course_detail_model.dart';
+
+// api
+import '../../../network/api/course_detail_provider.dart';
+
+class DetailCoursePage extends StatefulWidget {
   final int id;
   final String trailerKelas;
 
@@ -21,6 +31,17 @@ class DetailCoursePage extends StatelessWidget {
     required this.id,
     required this.trailerKelas,
   }) : super(key: key);
+
+  @override
+  _DetailCoursePageState createState() => _DetailCoursePageState();
+}
+
+class _DetailCoursePageState extends State<DetailCoursePage> {
+  @override
+  void dispose() {
+    this.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -173,7 +194,7 @@ class DetailCoursePage extends StatelessWidget {
       backgroundColor: backgroundColor,
       body: SafeArea(
         child: FutureBuilder(
-          future: courseDetailProvider.getDetail(id),
+          future: courseDetailProvider.getDetail(widget.id),
           builder: (BuildContext context, AsyncSnapshot snapshot) {
             if (snapshot.connectionState == ConnectionState.done) {
               // return TrailerVideo(
@@ -200,8 +221,8 @@ class DetailCoursePage extends StatelessWidget {
                           ),
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(24),
-                            child: WebViews(
-                              trailerKelas: trailerKelas,
+                            child: CustomInAppWebView(
+                              trailerKelas: widget.trailerKelas,
                             ),
                           ),
                         ),

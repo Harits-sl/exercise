@@ -1,7 +1,7 @@
 import 'dart:async';
+import 'dart:io';
 import 'dart:isolate';
-import 'package:exercise/firebase/crashlytics.dart';
-import 'package:exercise/helpers/certificate_helpers.dart';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -21,29 +21,35 @@ import './providers/object_detail.dart';
 // page
 import './ui/pages/splash_page.dart';
 
+// helper
+import './helpers/certificate_helpers.dart';
+
 void main() async {
-  runZonedGuarded<Future<void>>(() async {
-    WidgetsFlutterBinding.ensureInitialized();
+  if (Platform.isAndroid) {
+    runZonedGuarded<Future<void>>(() async {
+      WidgetsFlutterBinding.ensureInitialized();
 
-    await Firebase.initializeApp();
-    FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
-    await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(true);
+      await Firebase.initializeApp();
+      FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
+      await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(true);
 
-    Isolate.current.addErrorListener(RawReceivePort((pair) async {
-      final List<dynamic> errorAndStacktrace = pair;
-      await FirebaseCrashlytics.instance.recordError(
-        errorAndStacktrace.first,
-        errorAndStacktrace.last,
-      );
-    }).sendPort);
+      Isolate.current.addErrorListener(RawReceivePort((pair) async {
+        final List<dynamic> errorAndStacktrace = pair;
+        await FirebaseCrashlytics.instance.recordError(
+          errorAndStacktrace.first,
+          errorAndStacktrace.last,
+        );
+      }).sendPort);
 
-    certificateHelpers();
+      certificateHelpers();
+      runApp(const MyApp());
+    }, (error, stackTrace) {
+      FirebaseCrashlytics.instance.recordError(error, stackTrace);
+    });
+  } else {
     runApp(const MyApp());
-  }, (error, stackTrace) {
-    FirebaseCrashlytics.instance.recordError(error, stackTrace);
-  });
+  }
 }
-
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);

@@ -1,18 +1,24 @@
-import 'dart:async';
-import 'package:exercise/helpers/string_helper.dart';
-import 'package:exercise/ui/pages/detailCourse/web_view.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
-import 'package:exercise/providers/last_studied_provider.dart';
-import 'package:exercise/providers/object_detail.dart';
+// provider
+import '../../../providers/last_studied_provider.dart';
+import '../../../providers/object_detail.dart';
 
+// page
 import '../finish_course_page.dart';
+
+// widgets
 import '../../widgets/materi.dart';
 import '../../widgets/card_tool.dart';
 import '../../widgets/custom_button.dart';
+import '../../widgets/custom_in_app_web_view.dart';
+
+// theme
 import '../../../shared/theme.dart';
+
+// helpers
+import '../../../helpers/string_helper.dart';
 
 class MateriKelasPage extends StatefulWidget {
   final List listId;
@@ -284,7 +290,7 @@ class _MateriKelasPageState extends State<MateriKelasPage> {
         ),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(24),
-          child: WebViews(
+          child: CustomInAppWebView(
             trailerKelas: widget.listVideo[index],
             key: UniqueKey(),
           ),

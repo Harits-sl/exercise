@@ -1,4 +1,3 @@
-import 'package:exercise/models/search_model.dart';
 import 'package:flutter/material.dart';
 
 import './icon_star.dart';

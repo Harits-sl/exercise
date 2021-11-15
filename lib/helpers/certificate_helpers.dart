@@ -2,7 +2,6 @@
 // HandshakeException: Handshake error in client (OS Error: CERTIFICATE_VERIFY_FAILED: certificate has expired(handshake.cc:359)).
 
 import 'dart:convert';
-import 'dart:typed_data';
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
@@ -54,7 +53,6 @@ void certificateHelpers() {
   test('HTTP client to LetsEncrypt SSL website', () async {
     http.Client _client = createLEClient();
     http.Response _response = await _client.get(Uri.parse(sslUrl));
-    print(_response.body);
     expect(_response.statusCode, 200);
     _client
         .close(); // remember to close client as per https://pub.dev/packages/http
