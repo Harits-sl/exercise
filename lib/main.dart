@@ -1,22 +1,22 @@
 import 'dart:async';
-import 'dart:io';
 import 'dart:isolate';
 
+import 'package:exercise/cubit/auth/auth_cubit.dart';
+import 'package:exercise/cubit/authGoogle/auth_google_cubit.dart';
+import 'package:exercise/cubit/detailCourse/detail_course_cubit.dart';
+import 'package:exercise/cubit/lastStudiedCourse/cubit/last_studied_course_cubit.dart';
+import 'package:exercise/cubit/materialCourse/material_course_cubit.dart';
+import 'package:exercise/cubit/page/page_cubit.dart';
+import 'package:exercise/cubit/search/search_cubit.dart';
+import 'package:exercise/cubit/searchCourse/search_course_cubit.dart';
+import 'package:exercise/cubit/starterCourse/starter_course_cubit.dart';
+import 'package:exercise/cubit/user/user_cubit.dart';
+import 'package:exercise/ui/pages/login_page.dart';
+import 'package:exercise/ui/pages/main_page.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
-
-// api
-import './network/api/course_starter_provider.dart';
-import './network/api/course_detail_provider.dart';
-import './network/api/course_video_detail_provider.dart';
-import './network/api/course_search_provider.dart';
-
-// provider
-import './providers/search_provider.dart';
-import './providers/last_studied_provider.dart';
-import './providers/object_detail.dart';
 
 // page
 import './ui/pages/splash_page.dart';
@@ -25,30 +25,26 @@ import './ui/pages/splash_page.dart';
 import './helpers/certificate_helpers.dart';
 
 void main() async {
-  if (Platform.isAndroid) {
-    runZonedGuarded<Future<void>>(() async {
-      WidgetsFlutterBinding.ensureInitialized();
+  runZonedGuarded<Future<void>>(() async {
+    WidgetsFlutterBinding.ensureInitialized();
 
-      await Firebase.initializeApp();
-      FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
-      await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(true);
+    await Firebase.initializeApp();
+    FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
+    await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(true);
 
-      Isolate.current.addErrorListener(RawReceivePort((pair) async {
-        final List<dynamic> errorAndStacktrace = pair;
-        await FirebaseCrashlytics.instance.recordError(
-          errorAndStacktrace.first,
-          errorAndStacktrace.last,
-        );
-      }).sendPort);
+    Isolate.current.addErrorListener(RawReceivePort((pair) async {
+      final List<dynamic> errorAndStacktrace = pair;
+      await FirebaseCrashlytics.instance.recordError(
+        errorAndStacktrace.first,
+        errorAndStacktrace.last,
+      );
+    }).sendPort);
 
-      certificateHelpers();
-      runApp(const MyApp());
-    }, (error, stackTrace) {
-      FirebaseCrashlytics.instance.recordError(error, stackTrace);
-    });
-  } else {
+    certificateHelpers();
     runApp(const MyApp());
-  }
+  }, (error, stackTrace) {
+    FirebaseCrashlytics.instance.recordError(error, stackTrace);
+  });
 }
 
 class MyApp extends StatelessWidget {
@@ -56,36 +52,55 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
+    return MultiBlocProvider(
       providers: [
-        // api
-        ChangeNotifierProvider<CourseStarterProvider>(
-          create: (context) => CourseStarterProvider(),
+        BlocProvider(
+          create: (context) => AuthCubit(),
         ),
-        ChangeNotifierProvider<CourseDetailProivder>(
-          create: (context) => CourseDetailProivder(),
+        BlocProvider(
+          create: (context) => AuthGoogleCubit(),
         ),
-        ChangeNotifierProvider<CourseSearchProvider>(
-          create: (context) => CourseSearchProvider(),
+        BlocProvider(
+          create: (context) => UserCubit(),
         ),
-        ChangeNotifierProvider<CourseVideoDetailProvider>(
-          create: (context) => CourseVideoDetailProvider(),
+        BlocProvider(
+          create: (context) => PageCubit(),
         ),
-
-        // provider
-        ChangeNotifierProvider<SearchProvider>(
-          create: (context) => SearchProvider(),
+        BlocProvider(
+          create: (context) => FreeStarterCourseCubit(),
         ),
-        ChangeNotifierProvider<LastStudiedProvider>(
-          create: (context) => LastStudiedProvider(),
+        BlocProvider(
+          create: (context) => TopStarterCourseCubit(),
         ),
-        ChangeNotifierProvider<ObjectDetailProvider>(
-          create: (context) => ObjectDetailProvider(),
+        BlocProvider(
+          create: (context) => FreeStarterCourseForHomeCubit(),
+        ),
+        BlocProvider(
+          create: (context) => TopStarterCourseForHomeCubit(),
+        ),
+        BlocProvider(
+          create: (context) => LastStudiedCourseCubit(),
+        ),
+        BlocProvider(
+          create: (context) => DetailCourseCubit(),
+        ),
+        BlocProvider(
+          create: (context) => SearchCourseCubit(),
+        ),
+        BlocProvider(
+          create: (context) => SearchCubit(),
+        ),
+        BlocProvider(
+          create: (context) => MaterialCourseCubit(),
         ),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
-        home: SplashPage(),
+        routes: {
+          '/': (context) => SplashPage(),
+          '/login': (context) => LoginPage(),
+          '/main': (context) => MainPage(),
+        },
       ),
     );
   }

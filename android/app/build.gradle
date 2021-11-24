@@ -46,6 +46,7 @@ android {
         multiDexEnabled true
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
+        ndkVersion "23.1.7779620"
     }
 
     signingConfigs {

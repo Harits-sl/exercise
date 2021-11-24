@@ -30,7 +30,7 @@ class CardMentor extends StatelessWidget {
         children: [
           CircleAvatar(
             child: Image.network(
-              'https://buildwithangga.com${author['avatar']}',
+              'https://bwasandbox.com${author['avatar']}',
               width: 42,
             ),
           ),

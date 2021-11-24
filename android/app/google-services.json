@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "901885813261-6742najfpnfhvodpqd0blhviodrvdsnu.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.buildwithangga.app",
+            "certificate_hash": "9a39289755701df12911654673b927641610a0b8"
+          }
+        },
+        {
           "client_id": "901885813261-3s1oor8n9mds8dcac5km1s8dql6otfge.apps.googleusercontent.com",
           "client_type": 3
         }
@@ -29,6 +37,13 @@
             {
               "client_id": "901885813261-3s1oor8n9mds8dcac5km1s8dql6otfge.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "901885813261-qgcru055bofue0e9m06c8dur5snec2oi.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.buildwithangga.app"
+              }
             }
           ]
         }

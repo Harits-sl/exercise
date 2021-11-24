@@ -34,7 +34,6 @@ class _CustomInAppWebViewState extends State<CustomInAppWebView> {
 
   @override
   void dispose() {
-    this.dispose();
     super.dispose();
   }
 

@@ -1,4 +1,6 @@
-class CourseStarterModel {
+import 'package:equatable/equatable.dart';
+
+class CourseStarterModel extends Equatable {
   final int id;
   final String thumbnailKelas;
   final String namaKelas;
@@ -29,4 +31,15 @@ class CourseStarterModel {
       authors: json['authors'] ?? '',
     );
   }
+
+  @override
+  List<Object?> get props => [
+        id,
+        thumbnailKelas,
+        namaKelas,
+        authorKelas,
+        trailerKelas,
+        joinedAmount,
+        authors,
+      ];
 }

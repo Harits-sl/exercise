@@ -26,7 +26,6 @@ class CardCourse extends StatelessWidget {
           MaterialPageRoute(
             builder: (context) => DetailCoursePage(
               id: course.id,
-              trailerKelas: course.trailerKelas,
             ),
           ),
         );
