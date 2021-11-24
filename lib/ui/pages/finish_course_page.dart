@@ -3,7 +3,7 @@ import 'package:exercise/ui/widgets/custom_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'homePage/home_page.dart';
+import 'home_page.dart';
 import '../../../shared/theme.dart';
 
 class FinishCoursePage extends StatelessWidget {
@@ -44,7 +44,6 @@ class FinishCoursePage extends StatelessWidget {
                   SizedBox(
                     height: 10,
                   ),
-                  // TODO: perbaiki teks kelas
                   Text(
                     'kamu telah menyelesaikan kelas ${state.course.namaKelas} dengan sangat baik',
                     textAlign: TextAlign.center,

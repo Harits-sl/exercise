@@ -1,14 +1,13 @@
 import 'package:exercise/cubit/detailCourse/detail_course_cubit.dart';
 import 'package:exercise/cubit/lastStudiedCourse/cubit/last_studied_course_cubit.dart';
 import 'package:exercise/cubit/materialCourse/material_course_cubit.dart';
-import 'package:exercise/models/last_studied_course_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 
 // pages
 import './detail.dart';
-import '../materiKelas/materi_kelas_page.dart';
+import '../material_course_page.dart';
 
 // theme
 import '../../../shared/theme.dart';
@@ -53,106 +52,6 @@ class _DetailCoursePageState extends State<DetailCoursePage> {
     List listIsDone = [];
     List listIsExpanded = [];
     List l = [];
-
-    // void method() {
-    // // CourseDetailModel data = objectDetailProvider.objectDetail;
-
-    //   void _addListId(value) {
-    //     listCourseId.add(value);
-    //   }
-
-    //   void _addListMateri(value) {
-    //     listNamaMateri.add(value);
-    //   }
-
-    //   void _addListVideo(value) {
-    //     listVideoMateri.add(value);
-    //   }
-
-    //   void b(value) {
-    //     l.add(value);
-    //   }
-
-    //   void _addListExpanded(value) {
-    //     listIsExpanded.add(value);
-    //   }
-
-    //   void _addListDone(value) {
-    //     listIsDone.add(value);
-    //   }
-
-    //   var id = data.bagian.map((item) => item).map((item) {
-    //     for (var i = 0; i < item['materi_kelas'].length; i++) {
-    //       _addListId(item['materi_kelas'][i]['id']);
-    //     }
-    //   });
-
-    //   var namaMateri = data.bagian.map((item) => item).map((item) {
-    //     for (var i = 0; i < item['materi_kelas'].length; i++) {
-    //       _addListMateri(item['materi_kelas'][i]['nama_materi']);
-    //     }
-    //   });
-
-    //   var videoMateri = data.bagian.map((item) => item).map((item) {
-    //     for (var i = 0; i < item['materi_kelas'].length; i++) {
-    //       _addListVideo(item['materi_kelas'][i]['video_materi']);
-    //     }
-    //   });
-
-    //   var a = data.bagian.map((item) => item).map((item) {
-    //     for (var i = 0; i < item['materi_kelas'].length; i++) {
-    //       b(item['materi_kelas'][i]);
-    //     }
-    //   });
-    //   print(a);
-    //   print(id);
-    //   print(namaMateri);
-    //   print(videoMateri);
-
-    //   for (var i = 0; i < data.bagian.length; i++) {
-    //     _addListExpanded(true);
-    //   }
-
-    //   for (var i = 0; i < listCourseId.length; i++) {
-    //     _addListDone(false);
-    //   }
-
-    //   // objectDetailProvider.materi = {
-    //   //   'id': listCourseId.first,
-    //   //   'idMateriBagian': data.bagian[0]['materi_kelas'][0]['id_bagian_kelas'],
-    //   //   'namaMateri': listNamaMateri.first,
-    //   //   'videoMateri': listVideoMateri.first,
-    //   // };
-
-    //   // lastStudiedProvider.lastCourse = {
-    //   //   'namaMateri': listNamaMateri.first,
-    //   //   'listId': listCourseId,
-    //   //   'listMateri': listNamaMateri,
-    //   //   'listVideo': listVideoMateri,
-    //   //   'listIsExpanded': listIsExpanded,
-    //   //   'listIsDone': listIsDone,
-    //   //   'materiBagian': l,
-    //   //   'imageUrl': data.thumbnailKelas,
-    //   //   'index': 0,
-    //   //   'materi': data.bagian,
-    //   // };
-
-    //   Navigator.pushReplacement(
-    //     context,
-    //     MaterialPageRoute(
-    //       builder: (context) => MateriKelasPage(
-    //         listId: listCourseId,
-    //         listMateri: listNamaMateri,
-    //         listVideo: listVideoMateri,
-    //         listIsExpanded: listIsExpanded,
-    //         listIsDone: listIsDone,
-    //         materiBagian: l,
-    //         materi: data.bagian,
-    //         index: 0,
-    //       ),
-    //     ),
-    //   );
-    // }
 
     Widget appBar() {
       return Padding(
@@ -286,7 +185,7 @@ class _DetailCoursePageState extends State<DetailCoursePage> {
                 Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => MateriKelasPage(
+                    builder: (context) => MaterialCoursePage(
                       listId: listCourseId,
                       listMateri: listNamaMateri,
                       listVideo: listVideoMateri,
@@ -300,6 +199,24 @@ class _DetailCoursePageState extends State<DetailCoursePage> {
                 );
               }
 
+              Widget videoPlayer() {
+                return Container(
+                  width: 320,
+                  height: 200,
+                  padding: EdgeInsets.only(
+                    left: defaultMargin,
+                    right: defaultMargin,
+                    top: defaultMargin,
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(24),
+                    child: CustomInAppWebView(
+                      trailerKelas: state.course.trailerKelas,
+                    ),
+                  ),
+                );
+              }
+
               return Container(
                 child: Stack(
                   alignment: AlignmentDirectional.bottomCenter,
@@ -307,21 +224,7 @@ class _DetailCoursePageState extends State<DetailCoursePage> {
                     ListView(
                       children: [
                         appBar(),
-                        Container(
-                          width: 320,
-                          height: 200,
-                          padding: EdgeInsets.only(
-                            left: defaultMargin,
-                            right: defaultMargin,
-                            top: defaultMargin,
-                          ),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(24),
-                            child: CustomInAppWebView(
-                              trailerKelas: state.course.trailerKelas,
-                            ),
-                          ),
-                        ),
+                        videoPlayer(),
                         Detail(data: state.course),
                       ],
                     ),

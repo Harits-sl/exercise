@@ -2,27 +2,26 @@ import 'package:exercise/cubit/detailCourse/detail_course_cubit.dart';
 import 'package:exercise/cubit/lastStudiedCourse/cubit/last_studied_course_cubit.dart';
 import 'package:exercise/cubit/materialCourse/material_course_cubit.dart';
 import 'package:exercise/models/course_detail_model.dart';
-import 'package:exercise/models/material_course_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 
 // page
-import '../finish_course_page.dart';
+import 'finish_course_page.dart';
 
 // widgets
-import '../../widgets/materi.dart';
-import '../../widgets/card_tool.dart';
-import '../../widgets/custom_button.dart';
-import '../../widgets/custom_in_app_web_view.dart';
+import '../widgets/materi.dart';
+import '../widgets/card_tool.dart';
+import '../widgets/custom_button.dart';
+import '../widgets/custom_in_app_web_view.dart';
 
 // theme
-import '../../../shared/theme.dart';
+import '../../shared/theme.dart';
 
 // helpers
-import '../../../helpers/string_helper.dart';
+import '../../helpers/string_helper.dart';
 
-class MateriKelasPage extends StatefulWidget {
+class MaterialCoursePage extends StatefulWidget {
   final List listId;
   final List listMateri;
   final List listVideo;
@@ -32,7 +31,7 @@ class MateriKelasPage extends StatefulWidget {
   final List materi;
   final int index;
 
-  const MateriKelasPage({
+  const MaterialCoursePage({
     Key? key,
     required this.listId,
     required this.listMateri,
@@ -45,10 +44,10 @@ class MateriKelasPage extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _MateriKelasPageState createState() => _MateriKelasPageState();
+  _MaterialCoursePageState createState() => _MaterialCoursePageState();
 }
 
-class _MateriKelasPageState extends State<MateriKelasPage> {
+class _MaterialCoursePageState extends State<MaterialCoursePage> {
   late int index;
   late ScrollController _scrollController;
   double currentScroll = 0;

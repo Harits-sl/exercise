@@ -5,40 +5,26 @@
 // gestures. You can also use WidgetTester to find child widgets in the widget
 // tree, read text, and verify that the values of widget properties are correct.
 
+import 'package:flutter/material.dart';
+import 'package:flutter_test/flutter_test.dart';
+
 import 'package:exercise/main.dart';
 
 void main() {
-  // testWidgets('MyWidget has a title and message', (WidgetTester tester) async {
-  //   await tester
-  //       .pumpWidget(
-  //         MultiProvider(
-  //           providers: [
-  //             // api
-  //             ChangeNotifierProvider<CourseStarterProvider>(
-  //               create: (context) => CourseStarterProvider(),
-  //             ),
-  //             // provider
-  //             ChangeNotifierProvider<SearchProvider>(
-  //               create: (context) => SearchProvider(),
-  //             ),
-  //             ChangeNotifierProvider<LastStudiedProvider>(
-  //               create: (context) => LastStudiedProvider(),
-  //             ),
-  //             ChangeNotifierProvider<ObjectDetailProvider>(
-  //               create: (context) => ObjectDetailProvider(),
-  //             ),
-  //           ],
-  //           child: Builder(
-  //             builder: (_) => MyApp(),
-  //           ),
-  //         ),
-  //       )
-  //       .then((value) => HomePage());
+  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
+    // Build our app and trigger a frame.
+    await tester.pumpWidget(MyApp());
 
-  //   final titleFinder = find.text('#SpiritOfLearning');
-  //   final messageFinder = find.text('Mau Belajar Apa Hari Ini?');
+    // Verify that our counter starts at 0.
+    expect(find.text('0'), findsOneWidget);
+    expect(find.text('1'), findsNothing);
 
-  //   expect(titleFinder, findsOneWidget);
-  //   expect(messageFinder, findsOneWidget);
-  // });
+    // Tap the '+' icon and trigger a frame.
+    await tester.tap(find.byIcon(Icons.add));
+    await tester.pump();
+
+    // Verify that our counter has incremented.
+    expect(find.text('0'), findsNothing);
+    expect(find.text('1'), findsOneWidget);
+  });
 }
