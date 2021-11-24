@@ -1,5 +1,5 @@
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+// import 'package:firebase_auth/firebase_auth.dart';
 import 'package:oauth2_client/access_token_response.dart';
 import 'package:oauth2_client/google_oauth2_client.dart';
 import 'package:oauth2_client/oauth2_client.dart';
@@ -22,19 +22,19 @@ class AuthGoogle {
       final GoogleSignInAuthentication googleSignInAuthentication =
           await googleSignInAccount!.authentication;
 
-      final AuthCredential credential = GoogleAuthProvider.credential(
-        accessToken: googleSignInAuthentication.accessToken,
-        idToken: googleSignInAuthentication.idToken,
-      );
+      // final AuthCredential credential = GoogleAuthProvider.credential(
+      //   accessToken: googleSignInAuthentication.accessToken,
+      //   idToken: googleSignInAuthentication.idToken,
+      // );
 
-      print('ini googleSignInAccount $googleSignInAccount');
-      print('access token ${googleSignInAuthentication.accessToken}');
-      print('id token ${googleSignInAuthentication.idToken}');
-      print('ini credential $credential');
+      // print('ini googleSignInAccount $googleSignInAccount');
+      // print('access token ${googleSignInAuthentication.accessToken}');
+      // print('id token ${googleSignInAuthentication.idToken}');
+      // print('ini credential $credential');
 
       // await _auth.signInWithCredential(credential);
-    } on FirebaseAuthException catch (e) {
-      print(e.message);
+    } catch (e) {
+      print(e);
       throw e;
     }
   }
@@ -46,6 +46,14 @@ class AuthGoogle {
     GoogleOAuth2Client client = GoogleOAuth2Client(
         redirectUri: 'com.buildwithangga.app:/74ee-125-164-2-161.ngrok.io',
         customUriScheme: 'com.buildwithangga.app');
+
+    //Then, instantiate the helper passing the previously instantiated client
+    // OAuth2Helper oauth2Helper = OAuth2Helper(client,
+    //     grantType: OAuth2Helper.AUTHORIZATION_CODE,
+    //     clientId:
+    //         '794128228843-rup6n22qnt4knafa9r1bcbs84skhak12.apps.googleusercontent.com',
+    //     clientSecret: clientSecret,
+    //     scopes: ['email']);
 
     //Request a token using the Authorization Code flow...
     AccessTokenResponse tknResp = await client.getTokenWithAuthCodeFlow(

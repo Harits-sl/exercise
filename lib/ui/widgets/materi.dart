@@ -1,7 +1,6 @@
 import 'package:exercise/cubit/lastStudiedCourse/cubit/last_studied_course_cubit.dart';
 import 'package:exercise/cubit/materialCourse/material_course_cubit.dart';
 import 'package:exercise/models/course_detail_model.dart';
-import 'package:exercise/models/material_course_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';

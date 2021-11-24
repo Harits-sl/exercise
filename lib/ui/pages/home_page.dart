@@ -1,19 +1,15 @@
 import 'package:exercise/cubit/lastStudiedCourse/cubit/last_studied_course_cubit.dart';
 import 'package:exercise/cubit/search/search_cubit.dart';
-import 'package:exercise/cubit/searchCourse/search_course_cubit.dart';
 import 'package:exercise/cubit/starterCourse/starter_course_cubit.dart';
-import 'package:exercise/firebase/crashlytics.dart';
-import 'package:exercise/models/last_studied_course_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 
-import '../materiKelas/materi_kelas_page.dart';
-import '../search_page.dart';
-import '../../widgets/card_course.dart';
-import '../../widgets/category_item.dart';
-import '../../widgets/navbar_item.dart';
-import '../../../shared/theme.dart';
+import 'material_course_page.dart';
+import 'search_page.dart';
+import '../widgets/card_course.dart';
+import '../widgets/category_item.dart';
+import '../../shared/theme.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -135,7 +131,7 @@ class _HomePageState extends State<HomePage> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => MateriKelasPage(
+                    builder: (context) => MaterialCoursePage(
                       listId: state.course.listId,
                       listMateri: state.course.listMateri,
                       listVideo: state.course.listIdVideo,

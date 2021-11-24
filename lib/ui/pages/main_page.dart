@@ -5,7 +5,7 @@ import 'package:exercise/ui/widgets/navbar_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'homePage/home_page.dart';
+import 'home_page.dart';
 
 class MainPage extends StatelessWidget {
   const MainPage({Key? key}) : super(key: key);
