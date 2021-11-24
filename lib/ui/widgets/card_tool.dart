@@ -24,7 +24,7 @@ class CardTool extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Image.network(
-                'https://buildwithangga.com${tools['image']}',
+                'https://bwasandbox.com${tools['image']}',
                 width: 42,
                 height: 42,
                 fit: BoxFit.cover,

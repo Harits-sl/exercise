@@ -1,4 +1,6 @@
-class CourseDetailModel {
+import 'package:equatable/equatable.dart';
+
+class CourseDetailModel extends Equatable {
   final int id;
   final String levelKelas;
   final String thumbnailKelas;
@@ -50,4 +52,22 @@ class CourseDetailModel {
       tools: json['tools'] ?? [],
     );
   }
+
+  @override
+  List<Object?> get props => [
+        id,
+        levelKelas,
+        thumbnailKelas,
+        trailerKelas,
+        namaKelas,
+        tentangKelas,
+        tagline,
+        joinedAmount,
+        bagian,
+        keyPoints,
+        personas,
+        authors,
+        category,
+        tools,
+      ];
 }

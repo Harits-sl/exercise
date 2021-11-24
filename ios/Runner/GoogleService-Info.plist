@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+	<dict>
+		<key>CLIENT_ID</key>
+		<string>901885813261-qgcru055bofue0e9m06c8dur5snec2oi.apps.googleusercontent.com</string>
+		<key>REVERSED_CLIENT_ID</key>
+		<string>com.googleusercontent.apps.901885813261-qgcru055bofue0e9m06c8dur5snec2oi</string>
+		<key>API_KEY</key>
+		<string>AIzaSyCHOegQbRNUTyh-n1r8ywxJs_tSQRSrlDs</string>
+		<key>GCM_SENDER_ID</key>
+		<string>901885813261</string>
+		<key>PLIST_VERSION</key>
+		<string>1</string>
+		<key>BUNDLE_ID</key>
+		<string>com.buildwithangga.app</string>
+		<key>PROJECT_ID</key>
+		<string>app-buildwith-angga</string>
+		<key>STORAGE_BUCKET</key>
+		<string>app-buildwith-angga.appspot.com</string>
+		<key>IS_ADS_ENABLED</key>
+		<false></false>
+		<key>IS_ANALYTICS_ENABLED</key>
+		<false></false>
+		<key>IS_APPINVITE_ENABLED</key>
+		<true></true>
+		<key>IS_GCM_ENABLED</key>
+		<true></true>
+		<key>IS_SIGNIN_ENABLED</key>
+		<true></true>
+		<key>GOOGLE_APP_ID</key>
+		<string>1:901885813261:ios:4e52b5ed2683e2da872b44</string>
+		<!-- Google Sign-in Section -->
+		<key>CFBundleURLTypes</key>
+		<array>
+			<dict>
+				<key>CFBundleTypeRole</key>
+				<string>Editor</string>
+				<key>CFBundleURLSchemes</key>
+				<array>
+					<string>com.googleusercontent.apps.901885813261-qgcru055bofue0e9m06c8dur5snec2oi</string>
+				</array>
+			</dict>
+		</array>
+		<!-- End of the Google Sign-in Section -->
+	</dict>
+</plist>

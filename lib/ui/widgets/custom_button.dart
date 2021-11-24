@@ -3,13 +3,25 @@ import 'package:flutter/material.dart';
 import '../../shared/theme.dart';
 
 class CustomButton extends StatelessWidget {
+  final Color color;
   final String title;
+  final String? imageUrl;
   final Function method;
+  final double marginTop;
+  final double marginBottom;
+  final double borderRadius;
+  final TextStyle textStyle;
 
   const CustomButton({
     Key? key,
+    required this.color,
     required this.title,
     required this.method,
+    required this.textStyle,
+    required this.borderRadius,
+    this.imageUrl,
+    this.marginTop = 0,
+    this.marginBottom = 0,
   }) : super(key: key);
 
   @override
@@ -18,24 +30,36 @@ class CustomButton extends StatelessWidget {
       width: MediaQuery.of(context).size.width - (defaultMargin * 2),
       height: 45,
       decoration: BoxDecoration(
-        color: blueColor,
+        color: color,
         borderRadius: BorderRadius.all(
-          Radius.circular(14),
+          Radius.circular(borderRadius),
         ),
       ),
       margin: EdgeInsets.only(
-        bottom: defaultMargin,
+        top: marginTop,
+        bottom: marginBottom,
       ),
       child: TextButton(
         onPressed: () {
           method();
         },
-        child: Text(
-          title,
-          style: whiteTextStyle.copyWith(
-            fontWeight: medium,
-            fontSize: 14,
-          ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            imageUrl != null
+                ? Padding(
+                    padding: EdgeInsets.only(right: 10),
+                    child: Image.asset(
+                      'assets/logo_google.png',
+                      width: 24,
+                    ),
+                  )
+                : Container(),
+            Text(
+              title,
+              style: textStyle,
+            ),
+          ],
         ),
       ),
     );

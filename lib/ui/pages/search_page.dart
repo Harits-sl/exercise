@@ -1,15 +1,16 @@
-import 'package:exercise/providers/search_provider.dart';
+import 'package:exercise/cubit/search/search_cubit.dart';
+import 'package:exercise/cubit/searchCourse/search_course_cubit.dart';
+import 'package:exercise/cubit/starterCourse/starter_course_cubit.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
-
-import 'package:exercise/network/api/course_search_provider.dart';
-import 'package:exercise/network/api/course_starter_provider.dart';
 
 import '../widgets/search_result_item.dart';
 import '../../shared/theme.dart';
 
 class SearchPage extends StatefulWidget {
   final bool isNewFreeCourse;
+
   const SearchPage({
     Key? key,
     this.isNewFreeCourse = false,
@@ -37,25 +38,11 @@ class _SearchPageState extends State<SearchPage> {
       'UX Design',
     ];
 
-    // api
-    var courseSearchProvider = Provider.of<CourseSearchProvider>(context);
-    var courseStarterProvider = Provider.of<CourseStarterProvider>(context);
-
-    var searchProvider = Provider.of<SearchProvider>(context);
-
-    var fetchCourse = widget.isNewFreeCourse
-        ? courseStarterProvider.getAllFreeCourse()
-        : courseStarterProvider.getAllTopFeatureCourse();
-
-    var titleResult =
-        widget.isNewFreeCourse ? 'New Free Course' : 'Top Featured';
-
     Widget suggestionItem(text) {
       return GestureDetector(
         onTap: () {
-          searchProvider.isSearch = true;
-          searchProvider.query = text;
           _queryTextController.text = text;
+          context.read<SearchCourseCubit>().getSearchCourse(text);
         },
         child: Container(
           decoration: BoxDecoration(
@@ -81,7 +68,7 @@ class _SearchPageState extends State<SearchPage> {
       );
     }
 
-    AppBar appBar(BuildContext context) {
+    AppBar appBar() {
       return AppBar(
         shadowColor: Color(0xffE1E6F3),
         elevation: 1,
@@ -93,6 +80,9 @@ class _SearchPageState extends State<SearchPage> {
           ),
           onPressed: () {
             Navigator.pop(context);
+
+            // reset cubit to initialState
+            context.read<SearchCourseCubit>().resetSearchCourse();
           },
         ),
         title: Container(
@@ -101,10 +91,12 @@ class _SearchPageState extends State<SearchPage> {
           child: TextField(
             controller: _queryTextController,
             onSubmitted: (String _) {
-              searchProvider.isSearch = true;
-              searchProvider.query = _queryTextController.text;
+              context.read<SearchCubit>().setSearch(0);
+              context
+                  .read<SearchCourseCubit>()
+                  .getSearchCourse(_queryTextController.text);
             },
-            autofocus: searchProvider.isSearch,
+            // autofocus: searchProvider.isSearch,
             style: primaryTextStyle.copyWith(
               fontWeight: medium,
               fontSize: 12,
@@ -157,65 +149,130 @@ class _SearchPageState extends State<SearchPage> {
       );
     }
 
-    Widget result() {
+    Widget result(data) {
+      Widget titleText() {
+        return BlocBuilder<SearchCubit, int>(
+          builder: (context, currentIndex) {
+            switch (currentIndex) {
+              case 0:
+                return Text(
+                  'Result (${data.length.toString()})',
+                  style: primaryTextStyle.copyWith(
+                    fontWeight: semiBold,
+                    fontSize: 14,
+                  ),
+                );
+              case 1:
+                return Text(
+                  'New Free Course (${data.length.toString()})',
+                  style: primaryTextStyle.copyWith(
+                    fontWeight: semiBold,
+                    fontSize: 14,
+                  ),
+                );
+              case 2:
+                return Text(
+                  'Top Featured (${data.length.toString()})',
+                  style: primaryTextStyle.copyWith(
+                    fontWeight: semiBold,
+                    fontSize: 14,
+                  ),
+                );
+              default:
+                return Text('');
+            }
+          },
+        );
+      }
+
       return Container(
         margin: EdgeInsets.only(
           top: defaultMargin,
           left: defaultMargin,
           right: defaultMargin,
         ),
-        child: FutureBuilder<dynamic>(
-          future: searchProvider.isSearch
-              ? courseSearchProvider.searchCourse(searchProvider.query)
-              : fetchCourse,
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              var data = snapshot.data;
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    searchProvider.isSearch
-                        ? 'Result (${data.length.toString()})'
-                        : '$titleResult (${data.length.toString()})',
-                    style: primaryTextStyle.copyWith(
-                      fontWeight: semiBold,
-                      fontSize: 14,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            titleText(),
+            SizedBox(
+              height: 12,
+            ),
+            Column(
+              children: data
+                  .map<Widget>(
+                    (item) => SearchResultItem(
+                      course: item,
                     ),
-                  ),
-                  SizedBox(
-                    height: 12,
-                  ),
-                  Column(
-                    children: data
-                        .map<Widget>(
-                          (item) => SearchResultItem(
-                            course: item,
-                          ),
-                        )
-                        .toList(),
-                  ),
-                ],
-              );
-            }
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          },
+                  )
+                  .toList(),
+            ),
+          ],
         ),
       );
     }
 
     Widget body() {
-      if (!searchProvider.isSearch || _queryTextController.text != '') {
-        return result();
+      Widget searchBuilder(state) {
+        if (state is SearchCourseInitial) {
+          return suggestions();
+        } else if (state is SearchCourseLoading) {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        } else if (state is SearchCourseSuccess) {
+          return result(state.course);
+        }
+
+        return SizedBox();
       }
-      return suggestions();
+
+      Widget builder(state) {
+        if (state is StarterCourseInitial) {
+          return suggestions();
+        } else if (state is StarterCourseLoading) {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        } else if (state is StarterCourseSuccess) {
+          return result(state.course);
+        }
+
+        return SizedBox();
+      }
+
+      return BlocBuilder<SearchCubit, int>(
+        builder: (context, currentIndex) {
+          switch (currentIndex) {
+            case 0:
+              return BlocBuilder<SearchCourseCubit, SearchCourseState>(
+                  builder: (context, state) {
+                return searchBuilder(state);
+              });
+            case 1:
+              return BlocBuilder<FreeStarterCourseCubit, StarterCourseState>(
+                  builder: (context, state) {
+                return builder(state);
+              });
+            case 2:
+              return BlocBuilder<TopStarterCourseCubit, StarterCourseState>(
+                  builder: (context, state) {
+                return builder(state);
+              });
+
+            default:
+              return BlocBuilder<SearchCourseCubit, SearchCourseState>(
+                  builder: (context, state) {
+                return searchBuilder(state);
+              });
+          }
+        },
+      );
     }
 
     return Scaffold(
       backgroundColor: backgroundColor,
-      appBar: appBar(context),
+      appBar: appBar(),
       body: SingleChildScrollView(
         child: body(),
       ),

@@ -1,8 +1,14 @@
+import 'package:exercise/cubit/detailCourse/detail_course_cubit.dart';
+import 'package:exercise/cubit/lastStudiedCourse/cubit/last_studied_course_cubit.dart';
+import 'package:exercise/cubit/materialCourse/material_course_cubit.dart';
+import 'package:exercise/models/last_studied_course_model.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 
 // pages
 import './detail.dart';
+import '../materiKelas/materi_kelas_page.dart';
 
 // theme
 import '../../../shared/theme.dart';
@@ -11,25 +17,15 @@ import '../../../shared/theme.dart';
 import '../../widgets/custom_in_app_web_view.dart';
 import '../../widgets/custom_button.dart';
 
-// provider
-import '../../../providers/last_studied_provider.dart';
-import '../../../providers/object_detail.dart';
-import '../materiKelas/materi_kelas_page.dart';
-
 // models
 import '../../../models/course_detail_model.dart';
 
-// api
-import '../../../network/api/course_detail_provider.dart';
-
 class DetailCoursePage extends StatefulWidget {
   final int id;
-  final String trailerKelas;
 
   const DetailCoursePage({
     Key? key,
     required this.id,
-    required this.trailerKelas,
   }) : super(key: key);
 
   @override
@@ -38,6 +34,12 @@ class DetailCoursePage extends StatefulWidget {
 
 class _DetailCoursePageState extends State<DetailCoursePage> {
   @override
+  void initState() {
+    context.read<DetailCourseCubit>().getDetailCourse(widget.id);
+    super.initState();
+  }
+
+  @override
   void dispose() {
     this.dispose();
     super.dispose();
@@ -45,10 +47,6 @@ class _DetailCoursePageState extends State<DetailCoursePage> {
 
   @override
   Widget build(BuildContext context) {
-    var objectDetailProvider = Provider.of<ObjectDetailProvider>(context);
-    var lastStudiedProvider = Provider.of<LastStudiedProvider>(context);
-    var courseDetailProvider = Provider.of<CourseDetailProivder>(context);
-
     List listCourseId = [];
     List listNamaMateri = [];
     List listVideoMateri = [];
@@ -56,105 +54,105 @@ class _DetailCoursePageState extends State<DetailCoursePage> {
     List listIsExpanded = [];
     List l = [];
 
-    void method() {
-      CourseDetailModel data = objectDetailProvider.objectDetail;
+    // void method() {
+    // // CourseDetailModel data = objectDetailProvider.objectDetail;
 
-      void _addListId(value) {
-        listCourseId.add(value);
-      }
+    //   void _addListId(value) {
+    //     listCourseId.add(value);
+    //   }
 
-      void _addListMateri(value) {
-        listNamaMateri.add(value);
-      }
+    //   void _addListMateri(value) {
+    //     listNamaMateri.add(value);
+    //   }
 
-      void _addListVideo(value) {
-        listVideoMateri.add(value);
-      }
+    //   void _addListVideo(value) {
+    //     listVideoMateri.add(value);
+    //   }
 
-      void b(value) {
-        l.add(value);
-      }
+    //   void b(value) {
+    //     l.add(value);
+    //   }
 
-      void _addListExpanded(value) {
-        listIsExpanded.add(value);
-      }
+    //   void _addListExpanded(value) {
+    //     listIsExpanded.add(value);
+    //   }
 
-      void _addListDone(value) {
-        listIsDone.add(value);
-      }
+    //   void _addListDone(value) {
+    //     listIsDone.add(value);
+    //   }
 
-      var id = data.bagian.map((item) => item).map((item) {
-        for (var i = 0; i < item['materi_kelas'].length; i++) {
-          _addListId(item['materi_kelas'][i]['id']);
-        }
-      });
+    //   var id = data.bagian.map((item) => item).map((item) {
+    //     for (var i = 0; i < item['materi_kelas'].length; i++) {
+    //       _addListId(item['materi_kelas'][i]['id']);
+    //     }
+    //   });
 
-      var namaMateri = data.bagian.map((item) => item).map((item) {
-        for (var i = 0; i < item['materi_kelas'].length; i++) {
-          _addListMateri(item['materi_kelas'][i]['nama_materi']);
-        }
-      });
+    //   var namaMateri = data.bagian.map((item) => item).map((item) {
+    //     for (var i = 0; i < item['materi_kelas'].length; i++) {
+    //       _addListMateri(item['materi_kelas'][i]['nama_materi']);
+    //     }
+    //   });
 
-      var videoMateri = data.bagian.map((item) => item).map((item) {
-        for (var i = 0; i < item['materi_kelas'].length; i++) {
-          _addListVideo(item['materi_kelas'][i]['video_materi']);
-        }
-      });
+    //   var videoMateri = data.bagian.map((item) => item).map((item) {
+    //     for (var i = 0; i < item['materi_kelas'].length; i++) {
+    //       _addListVideo(item['materi_kelas'][i]['video_materi']);
+    //     }
+    //   });
 
-      var a = data.bagian.map((item) => item).map((item) {
-        for (var i = 0; i < item['materi_kelas'].length; i++) {
-          b(item['materi_kelas'][i]);
-        }
-      });
-      print(a);
-      print(id);
-      print(namaMateri);
-      print(videoMateri);
+    //   var a = data.bagian.map((item) => item).map((item) {
+    //     for (var i = 0; i < item['materi_kelas'].length; i++) {
+    //       b(item['materi_kelas'][i]);
+    //     }
+    //   });
+    //   print(a);
+    //   print(id);
+    //   print(namaMateri);
+    //   print(videoMateri);
 
-      for (var i = 0; i < data.bagian.length; i++) {
-        _addListExpanded(true);
-      }
+    //   for (var i = 0; i < data.bagian.length; i++) {
+    //     _addListExpanded(true);
+    //   }
 
-      for (var i = 0; i < listCourseId.length; i++) {
-        _addListDone(false);
-      }
+    //   for (var i = 0; i < listCourseId.length; i++) {
+    //     _addListDone(false);
+    //   }
 
-      objectDetailProvider.materi = {
-        'id': listCourseId.first,
-        'idMateriBagian': data.bagian[0]['materi_kelas'][0]['id_bagian_kelas'],
-        'namaMateri': listNamaMateri.first,
-        'videoMateri': listVideoMateri.first,
-      };
+    //   // objectDetailProvider.materi = {
+    //   //   'id': listCourseId.first,
+    //   //   'idMateriBagian': data.bagian[0]['materi_kelas'][0]['id_bagian_kelas'],
+    //   //   'namaMateri': listNamaMateri.first,
+    //   //   'videoMateri': listVideoMateri.first,
+    //   // };
 
-      lastStudiedProvider.lastCourse = {
-        'namaMateri': listNamaMateri.first,
-        'listId': listCourseId,
-        'listMateri': listNamaMateri,
-        'listVideo': listVideoMateri,
-        'listIsExpanded': listIsExpanded,
-        'listIsDone': listIsDone,
-        'materiBagian': l,
-        'imageUrl': data.thumbnailKelas,
-        'index': 0,
-        'materi': data.bagian,
-      };
+    //   // lastStudiedProvider.lastCourse = {
+    //   //   'namaMateri': listNamaMateri.first,
+    //   //   'listId': listCourseId,
+    //   //   'listMateri': listNamaMateri,
+    //   //   'listVideo': listVideoMateri,
+    //   //   'listIsExpanded': listIsExpanded,
+    //   //   'listIsDone': listIsDone,
+    //   //   'materiBagian': l,
+    //   //   'imageUrl': data.thumbnailKelas,
+    //   //   'index': 0,
+    //   //   'materi': data.bagian,
+    //   // };
 
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => MateriKelasPage(
-            listId: listCourseId,
-            listMateri: listNamaMateri,
-            listVideo: listVideoMateri,
-            listIsExpanded: listIsExpanded,
-            listIsDone: listIsDone,
-            materiBagian: l,
-            materi: data.bagian,
-            index: 0,
-          ),
-        ),
-      );
-    }
+    //   Navigator.pushReplacement(
+    //     context,
+    //     MaterialPageRoute(
+    //       builder: (context) => MateriKelasPage(
+    //         listId: listCourseId,
+    //         listMateri: listNamaMateri,
+    //         listVideo: listVideoMateri,
+    //         listIsExpanded: listIsExpanded,
+    //         listIsDone: listIsDone,
+    //         materiBagian: l,
+    //         materi: data.bagian,
+    //         index: 0,
+    //       ),
+    //     ),
+    //   );
+    // }
 
     Widget appBar() {
       return Padding(
@@ -190,19 +188,117 @@ class _DetailCoursePageState extends State<DetailCoursePage> {
       );
     }
 
-    return Scaffold(
-      backgroundColor: backgroundColor,
-      body: SafeArea(
-        child: FutureBuilder(
-          future: courseDetailProvider.getDetail(widget.id),
-          builder: (BuildContext context, AsyncSnapshot snapshot) {
-            if (snapshot.connectionState == ConnectionState.done) {
-              // return TrailerVideo(
-              //   trailerKelas: trailerKelas,
-              //   data: snapshot.data,
-              // );
+    Widget body() {
+      return SafeArea(
+        child: BlocBuilder<DetailCourseCubit, DetailCourseState>(
+          builder: (context, state) {
+            if (state is DetailCourseLoading) {
+              return Center(
+                child: CircularProgressIndicator(),
+              );
+            }
 
-              objectDetailProvider.objectDetail = snapshot.data;
+            if (state is DetailCourseSuccess) {
+              void method() {
+                CourseDetailModel data = state.course;
+
+                void _addListId(value) {
+                  listCourseId.add(value);
+                }
+
+                void _addListMateri(value) {
+                  listNamaMateri.add(value);
+                }
+
+                void _addListVideo(value) {
+                  listVideoMateri.add(value);
+                }
+
+                void b(value) {
+                  l.add(value);
+                }
+
+                void _addListExpanded(value) {
+                  listIsExpanded.add(value);
+                }
+
+                void _addListDone(value) {
+                  listIsDone.add(value);
+                }
+
+                var id = data.bagian.map((item) => item).map((item) {
+                  for (var i = 0; i < item['materi_kelas'].length; i++) {
+                    _addListId(item['materi_kelas'][i]['id']);
+                  }
+                });
+
+                var namaMateri = data.bagian.map((item) => item).map((item) {
+                  for (var i = 0; i < item['materi_kelas'].length; i++) {
+                    _addListMateri(item['materi_kelas'][i]['nama_materi']);
+                  }
+                });
+
+                var videoMateri = data.bagian.map((item) => item).map((item) {
+                  for (var i = 0; i < item['materi_kelas'].length; i++) {
+                    _addListVideo(item['materi_kelas'][i]['video_materi']);
+                  }
+                });
+
+                var a = data.bagian.map((item) => item).map((item) {
+                  for (var i = 0; i < item['materi_kelas'].length; i++) {
+                    b(item['materi_kelas'][i]);
+                  }
+                });
+                print(a);
+                print(id);
+                print(namaMateri);
+                print(videoMateri);
+
+                for (var i = 0; i < data.bagian.length; i++) {
+                  _addListExpanded(true);
+                }
+
+                for (var i = 0; i < listCourseId.length; i++) {
+                  _addListDone(false);
+                }
+
+                context.read<MaterialCourseCubit>().newMapMaterialCourse(
+                      id: listCourseId.first,
+                      idMateriBagian: data.bagian[0]['materi_kelas'][0]
+                          ['id_bagian_kelas'],
+                      idVideoMateri: listVideoMateri.first,
+                      namaMateri: listNamaMateri.first,
+                    );
+
+                context.read<LastStudiedCourseCubit>().newMapLastStudiedCourse(
+                      index: 0,
+                      imageUrl: data.thumbnailKelas,
+                      namaMateri: listNamaMateri.first,
+                      materi: data.bagian,
+                      listId: listCourseId,
+                      listMateri: listNamaMateri,
+                      listIdVideo: listVideoMateri,
+                      listIsExpanded: listIsExpanded,
+                      listIsDone: listIsDone,
+                      listMateriBagian: l,
+                    );
+
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => MateriKelasPage(
+                      listId: listCourseId,
+                      listMateri: listNamaMateri,
+                      listVideo: listVideoMateri,
+                      listIsExpanded: listIsExpanded,
+                      listIsDone: listIsDone,
+                      materiBagian: l,
+                      materi: data.bagian,
+                      index: 0,
+                    ),
+                  ),
+                );
+              }
 
               return Container(
                 child: Stack(
@@ -222,28 +318,38 @@ class _DetailCoursePageState extends State<DetailCoursePage> {
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(24),
                             child: CustomInAppWebView(
-                              trailerKelas: widget.trailerKelas,
+                              trailerKelas: state.course.trailerKelas,
                             ),
                           ),
                         ),
-                        Detail(data: snapshot.data),
+                        Detail(data: state.course),
                       ],
                     ),
                     CustomButton(
                       title: 'Gabung Kelas',
                       method: method,
+                      borderRadius: 14,
+                      color: blueColor,
+                      marginBottom: defaultMargin,
+                      textStyle: whiteTextStyle.copyWith(
+                        fontWeight: medium,
+                        fontSize: 14,
+                      ),
                     ),
                   ],
                 ),
               );
             }
 
-            return Center(
-              child: CircularProgressIndicator(),
-            );
+            return SizedBox();
           },
         ),
-      ),
+      );
+    }
+
+    return Scaffold(
+      backgroundColor: backgroundColor,
+      body: body(),
     );
   }
 }
