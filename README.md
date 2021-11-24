@@ -2,7 +2,7 @@
 
 ### todo
 - [ ] Menambahkan fitur login dari google
-- [ ] Fix bug pada saat fullscreen video, terkadang ukuran tidak mempenuhi layar Menambahkan halaman kategori kelas ketika salah satu kategori kelas di klik pada halaman home
+- [ ] Fix bug pada saat fullscreen video, terkadang ukuran tidak mempenuhi layar
 - [x] Bisa logout akun
 
 
